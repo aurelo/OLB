@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 class ResponseCodeTest {
     @Test
@@ -16,7 +18,7 @@ class ResponseCodeTest {
         nmmResponseCodeList.add(ResponseCode.NMM_REJECTED);
         nmmResponseCodeList.add(ResponseCode.NMM_DPC_DOWN);
 
-        assertEquals(nmmResponseCodeList, ResponseCode.validResponseCodes(MessageType.NMM_RESP));
+        assertThat(nmmResponseCodeList, is(ResponseCode.validResponseCodes((MessageType.NMM_RESP))));
     }
 
     @Test
@@ -28,10 +30,16 @@ class ResponseCodeTest {
     public void testIsResponseValidForMessage() {
         assertTrue(ResponseCode.ADVICE_APPROVED.isValidFor(MessageType.AUTHORIZATION_ADVICE_RESP));
         assertTrue(ResponseCode.REVERSAL_COMPLETED_PARTIALLY.isValidFor(MessageType.TRX_REVERSAL_RESP));
-
         assertFalse(ResponseCode.ADVICE_DUPLICATE_TRANSMISSION.isValidFor(MessageType.FHM_RESP));
-
         assertTrue(ResponseCode.TRX_APPROVED.isValidFor(MessageType.TRX_RESP));
+    }
+
+    @Test
+    void shoudGetResponseFromString() {
+        assertAll(
+                 () -> assertThat(ResponseCode.from("00", MessageType.NMM_RESP), is(ResponseCode.NMM_APPROVED))
+                ,() -> assertThat(ResponseCode.from("51", MessageType.TRX_RESP), is(ResponseCode.TRX_NOT_SUFFICIENT_FUNDS))
+        );
     }
 
 

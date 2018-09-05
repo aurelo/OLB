@@ -60,6 +60,9 @@ public enum ResponseCode {
     ,ADVICE_SUSPICIOUS_REVERSAL_OVERRIDE("S1", MessageType.ADVICES)
     ,ADVICE_MISDISPENSE_REV_OVERRIDE("S2", MessageType.ADVICES)
     ,ADVICE_PLUS_ADD_CASH_WDR_OR_ADVANCE("S3", MessageType.ADVICES)
+
+
+    ,INVALID_RESPONSE("XX", null)
     ;
 
      private final String code;
@@ -81,7 +84,10 @@ public enum ResponseCode {
     }
 
     public static List<ResponseCode> validResponseCodes(MessageType messageType) {
-        return Arrays.stream(ResponseCode.values()).filter(e -> Arrays.asList(e.getValidForMessages()).contains(messageType)).collect(Collectors.toList());
+        return Arrays.stream(ResponseCode.values())
+                     .filter(e -> e.getValidForMessages() != null)
+                     .filter(e -> Arrays.asList(e.getValidForMessages()).contains(messageType))
+                     .collect(Collectors.toList());
     }
 
     public static boolean isValidResponseForMessage(ResponseCode code, MessageType messageType) {
@@ -90,5 +96,12 @@ public enum ResponseCode {
 
     public boolean isValidFor(MessageType messageType) {
         return Arrays.asList(getValidForMessages()).contains(messageType);
+    }
+
+    public static ResponseCode from(String code, MessageType responseMessageType) {
+        return Arrays.stream(ResponseCode.values())
+                     .filter(e -> e.getCode().equals(code) && e.isValidFor(responseMessageType))
+                     .findFirst()
+                     .orElse(ResponseCode.INVALID_RESPONSE);
     }
 }

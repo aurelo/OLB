@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PrimaryBitmapFieldTest {
@@ -13,9 +15,8 @@ class PrimaryBitmapFieldTest {
     @Test
     public void testValidFieldsForNTM() {
         List<BitmapField> NTMfields = PrimaryBitmapField.fieldsForProduct(ProductIndicator.NMM);
-        List<BitmapField> NTMshouldContain = Arrays.asList(PrimaryBitmapField.P1, PrimaryBitmapField.P7, PrimaryBitmapField.P11, PrimaryBitmapField.P39, PrimaryBitmapField.P53, PrimaryBitmapField.P64);
 
-        assertArrayEquals(NTMfields.toArray(), NTMshouldContain.toArray());
+        assertThat(NTMfields, hasItems(PrimaryBitmapField.P1, PrimaryBitmapField.P7, PrimaryBitmapField.P11, PrimaryBitmapField.P39, PrimaryBitmapField.P53, PrimaryBitmapField.P64));
     }
 
     @Test
@@ -63,6 +64,13 @@ class PrimaryBitmapFieldTest {
         String p32Encoded = "0512876";
 
         assertEquals(p32Encoded, PrimaryBitmapField.P32.encoded(p32));
+    }
+
+    @Test
+    void field44ShouldBePartOfAtmAnswer() {
+        List<BitmapField> atmFields = PrimaryBitmapField.fieldsForProduct(ProductIndicator.ATM);
+
+        assertThat(atmFields, hasItems(PrimaryBitmapField.P44A));
     }
 
 }

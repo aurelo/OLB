@@ -19,9 +19,6 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
 
     private List<E> presentFields;
 
-    Class<E> clazz;
-    private final ProductIndicator productIndicator;
-
     //searches 1 in binary string which signifies existence of field
     private static final Pattern pattern = Pattern.compile("[1]");
 
@@ -53,7 +50,9 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
             positions.add(matcher.start() + 1);
         }
 
-        return this.enumValues.stream().filter(e -> Arrays.asList(e.getProductIndicators()).contains(forProduct)).filter(e -> positions.contains(e.getPosition())).collect(Collectors.toList());
+        return this.enumValues.stream().filter(e -> Arrays.asList(e.getProductIndicators()).contains(forProduct))
+                                       .filter(e -> positions.contains(e.getPosition()))
+                                       .collect(Collectors.toList());
     }
 
     public Bitmap(String bitmap, Class<E> forEnum, ProductIndicator forProduct) throws IllegalArgumentException {
@@ -62,10 +61,9 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
         }
 
         this.hexRepresentation = bitmap;
-        this.productIndicator = forProduct;
+        ProductIndicator productIndicator = forProduct;
 
-        this.clazz = forEnum;
-        this.enumValues = new ArrayList<>(EnumSet.allOf(this.clazz));
+        this.enumValues = new ArrayList<>(EnumSet.allOf(forEnum));
 
 
         // binary representation of BigInteger cuts leading zeros
@@ -130,7 +128,10 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
 
     public static String encode(Map<BitmapField, String> fields) {
 
-        List<BitmapField> sorted = fields.keySet().stream().sorted(Comparator.comparingInt(BitmapField::getOrderingPosition)).collect(Collectors.toList());
+        List<BitmapField> sorted = fields.keySet()
+                                         .stream()
+                                         .sorted(Comparator.comparingInt(BitmapField::getOrderingPosition))
+                                         .collect(Collectors.toList());
 
         return sorted.stream().map(e -> e.encoded(fields.get(e))).collect(Collectors.joining());
 

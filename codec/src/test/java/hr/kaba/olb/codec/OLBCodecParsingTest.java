@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OLBCodecParsingTest {
 
     @Test
-    public void testDecodingLogonRequest() {
+    void testDecodingLogonRequest() {
         String logonRequestString = " DISO0060000100800822000000000000004000000000000000619111227000001001";
         HISOMessage logonRequest = OLBCodec.decode(logonRequestString);
 
@@ -28,16 +28,19 @@ class OLBCodecParsingTest {
         expectedFields.put(PrimaryBitmapField.P11, "000001");
         expectedFields.put(SecondaryBitmapField.P70, "001"); //NetworkManagementInformationCode.LOGON
 
-        assertNotNull(logonRequest);
-        assertEquals(ProductIndicator.NMM, logonRequest.getProductType());
-        assertEquals(MessageType.NMM_REQ, logonRequest.getMessageType());
 
-        assertEquals(expectedFields, logonRequest.getFields());
-        assertFalse(logonRequest.getTransactionCode().isPresent());
+        assertAll(
+                () -> assertNotNull(logonRequest)
+                , () -> assertEquals(ProductIndicator.NMM, logonRequest.getProductType())
+                , () -> assertEquals(MessageType.NMM_REQ, logonRequest.getMessageType())
+                , () -> assertEquals(expectedFields, logonRequest.getFields())
+                , () -> assertFalse(logonRequest.getTransactionCode().isPresent())
+        );
+
     }
 
     @Test
-    public void testDecodingLogonResponse() {
+    void testDecodingLogonResponse() {
         String logonResonseString = " FISO006000051081082200000020000000400000000000000061911125100000100001";
         HISOMessage logonResponse = OLBCodec.decode(logonResonseString);
 
@@ -50,17 +53,17 @@ class OLBCodecParsingTest {
         expectedFields.put(SecondaryBitmapField.P70, "001");
 
 
-        assertNotNull(logonResponse);
-        assertEquals(ProductIndicator.NMM, logonResponse.getProductType());
-        assertEquals(MessageType.NMM_RESP, logonResponse.getMessageType());
-
-        assertEquals(expectedFields, logonResponse.getFields());
-
-        assertFalse(logonResponse.getTransactionCode().isPresent());
+        assertAll(
+                () -> assertNotNull(logonResponse)
+                , () -> assertEquals(ProductIndicator.NMM, logonResponse.getProductType())
+                , () -> assertEquals(MessageType.NMM_RESP, logonResponse.getMessageType())
+                , () -> assertEquals(expectedFields, logonResponse.getFields())
+                , () -> assertFalse(logonResponse.getTransactionCode().isPresent())
+        );
     }
 
     @Test
-    public void testDecodingEchoRequest() {
+    void testDecodingEchoRequest() {
         String echoRequestString = " DISO0060000100800822000000000000004000000000000000619111236000001301";
 
         HISOMessage echoRequest = OLBCodec.decode(echoRequestString);
@@ -84,7 +87,7 @@ class OLBCodecParsingTest {
     }
 
     @Test
-    public void testDecodingEchoResponse() {
+    void testDecodingEchoResponse() {
         String echoResponseString = " FISO006000015081082200000020000000400000000000000061911125300000100301";
 
         Map<BitmapField, String> expectedFields = new HashMap<>();
@@ -97,12 +100,13 @@ class OLBCodecParsingTest {
 
         HISOMessage echoResponse = OLBCodec.decode(echoResponseString);
 
-        assertNotNull(echoResponse);
-        assertEquals(ProductIndicator.NMM, echoResponse.getProductType());
-        assertEquals(MessageType.NMM_RESP, echoResponse.getMessageType());
-        assertEquals(expectedFields, echoResponse.getFields());
-
-        assertFalse(echoResponse.getTransactionCode().isPresent());
+        assertAll(
+                () -> assertNotNull(echoResponse)
+                , () -> assertEquals(ProductIndicator.NMM, echoResponse.getProductType())
+                , () -> assertEquals(MessageType.NMM_RESP, echoResponse.getMessageType())
+                , () -> assertEquals(expectedFields, echoResponse.getFields())
+                , () -> assertFalse(echoResponse.getTransactionCode().isPresent())
+        );
 
     }
 
@@ -118,12 +122,13 @@ class OLBCodecParsingTest {
 
         HISOMessage logoffRequest = OLBCodec.decode(logoffRequestString);
 
-        assertNotNull(logoffRequestString);
-        assertEquals(ProductIndicator.NMM, logoffRequest.getProductType());
-        assertEquals(MessageType.NMM_REQ, logoffRequest.getMessageType());
-        assertEquals(expectedFields, logoffRequest.getFields());
-
-        assertFalse(logoffRequest.getTransactionCode().isPresent());
+        assertAll(
+                () -> assertNotNull(logoffRequestString)
+                , () -> assertEquals(ProductIndicator.NMM, logoffRequest.getProductType())
+                , () -> assertEquals(MessageType.NMM_REQ, logoffRequest.getMessageType())
+                , () -> assertEquals(expectedFields, logoffRequest.getFields())
+                , () -> assertFalse(logoffRequest.getTransactionCode().isPresent())
+        );
     }
 
     @Test
@@ -138,12 +143,14 @@ class OLBCodecParsingTest {
         expectedFields.put(SecondaryBitmapField.P70, "002");
         HISOMessage logoffReponse = OLBCodec.decode(logoffResponseString);
 
-        assertNotNull(logoffReponse);
-        assertEquals(ProductIndicator.NMM, logoffReponse.getProductType());
-        assertEquals(MessageType.NMM_RESP, logoffReponse.getMessageType());
-        assertEquals(expectedFields, logoffReponse.getFields());
 
-        assertFalse(logoffReponse.getTransactionCode().isPresent());
+        assertAll(
+                () -> assertNotNull(logoffReponse)
+                , () -> assertEquals(ProductIndicator.NMM, logoffReponse.getProductType())
+                , () -> assertEquals(MessageType.NMM_RESP, logoffReponse.getMessageType())
+                , () -> assertEquals(expectedFields, logoffReponse.getFields())
+                , () -> assertFalse(logoffReponse.getTransactionCode().isPresent())
+        );
     }
 
     @Test
@@ -173,15 +180,13 @@ class OLBCodecParsingTest {
         expectedFields.put(SecondaryBitmapField.S100, "24000000000");
 
 
-
-
-        assertEquals(ProductIndicator.ATM, depositRequest.getProductType());
-        assertEquals(MessageType.TRX_REQ, depositRequest.getMessageType());
-
-        assertEquals(expectedFields, depositRequest.getFields());
-
-        assertTrue(depositRequest.getTransactionCode().isPresent());
-        assertEquals(TransactionCode.ISOTransactionCode.DEPOSIT, depositRequest.getISOTransactionalCode().get());
+        assertAll(
+                () -> assertEquals(ProductIndicator.ATM, depositRequest.getProductType())
+                , () -> assertEquals(MessageType.TRX_REQ, depositRequest.getMessageType())
+                , () -> assertEquals(expectedFields, depositRequest.getFields())
+                , () -> assertTrue(depositRequest.getTransactionCode().isPresent())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.DEPOSIT, depositRequest.getISOTransactionalCode().get())
+        );
     }
 
     @Test
@@ -212,15 +217,13 @@ class OLBCodecParsingTest {
         expectedFields.put(SecondaryBitmapField.S100, "24000080000");
 
 
-
-
-        assertEquals(ProductIndicator.ATM, atmIsplataReq.getProductType());
-        assertEquals(MessageType.TRX_REQ, atmIsplataReq.getMessageType());
-
-        assertEquals(expectedFields, atmIsplataReq.getFields());
-
-        assertTrue(atmIsplataReq.getTransactionCode().isPresent());
-        assertEquals(TransactionCode.ISOTransactionCode.WITHDRAWAL, atmIsplataReq.getISOTransactionalCode().get());
+        assertAll(
+                () -> assertEquals(ProductIndicator.ATM, atmIsplataReq.getProductType())
+                , () -> assertEquals(MessageType.TRX_REQ, atmIsplataReq.getMessageType())
+                , () -> assertEquals(expectedFields, atmIsplataReq.getFields())
+                , () -> assertTrue(atmIsplataReq.getTransactionCode().isPresent())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.WITHDRAWAL, atmIsplataReq.getISOTransactionalCode().get())
+        );
     }
 
     @Test
@@ -255,14 +258,13 @@ class OLBCodecParsingTest {
         HISOMessage posProdajaRate = OLBCodec.decode(posProdajaRateString);
 
 
-        assertEquals(ProductIndicator.POS, posProdajaRate.getProductType());
-        assertEquals(MessageType.TRX_REQ, posProdajaRate.getMessageType());
-
-        assertEquals(expectedFields, posProdajaRate.getFields());
-
-        assertTrue(posProdajaRate.getTransactionCode().isPresent());
-        assertEquals(TransactionCode.ISOTransactionCode.MBNET_INSTALMENT, posProdajaRate.getISOTransactionalCode().get());
-
+        assertAll(
+                () -> assertEquals(ProductIndicator.POS, posProdajaRate.getProductType())
+                , () -> assertEquals(MessageType.TRX_REQ, posProdajaRate.getMessageType())
+                , () -> assertEquals(expectedFields, posProdajaRate.getFields())
+                , () -> assertTrue(posProdajaRate.getTransactionCode().isPresent())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.MBNET_INSTALMENT, posProdajaRate.getISOTransactionalCode().get())
+        );
     }
 
     @Test
@@ -294,13 +296,14 @@ class OLBCodecParsingTest {
 
         HISOMessage posProdajaRequest = OLBCodec.decode(posProdajaRequestString);
 
-        assertEquals(ProductIndicator.POS, posProdajaRequest.getProductType());
-        assertEquals(MessageType.TRX_REQ, posProdajaRequest.getMessageType());
 
-        assertEquals(expectedFields, posProdajaRequest.getFields());
-
-        assertTrue(posProdajaRequest.getTransactionCode().isPresent());
-        assertEquals(TransactionCode.ISOTransactionCode.GOODS_AND_SERVICES, posProdajaRequest.getISOTransactionalCode().get());
+        assertAll(
+                () -> assertEquals(ProductIndicator.POS, posProdajaRequest.getProductType())
+                , () -> assertEquals(MessageType.TRX_REQ, posProdajaRequest.getMessageType())
+                , () -> assertEquals(expectedFields, posProdajaRequest.getFields())
+                , () -> assertTrue(posProdajaRequest.getTransactionCode().isPresent())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.GOODS_AND_SERVICES, posProdajaRequest.getISOTransactionalCode().get())
+        );
     }
 
 
@@ -333,13 +336,12 @@ class OLBCodecParsingTest {
         expectedFields.put(SecondaryBitmapField.S100, "24000080000");
 
 
-        assertEquals(ProductIndicator.ATM, atmUpitUStanjeReq.getProductType());
-        assertEquals(MessageType.TRX_REQ, atmUpitUStanjeReq.getMessageType());
-
-        assertEquals(expectedFields, atmUpitUStanjeReq.getFields());
-
-
-        assertEquals(TransactionCode.ISOTransactionCode.BALANCE_INQUIRY, atmUpitUStanjeReq.getISOTransactionalCode().get());
+        assertAll(
+                () -> assertEquals(ProductIndicator.ATM, atmUpitUStanjeReq.getProductType())
+                , () -> assertEquals(MessageType.TRX_REQ, atmUpitUStanjeReq.getMessageType())
+                , () -> assertEquals(expectedFields, atmUpitUStanjeReq.getFields())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.BALANCE_INQUIRY, atmUpitUStanjeReq.getISOTransactionalCode().get())
+        );
     }
 
 
@@ -375,12 +377,13 @@ class OLBCodecParsingTest {
 
         HISOMessage posRateStornoReq = OLBCodec.decode(posRateStornoString);
 
-        assertEquals(ProductIndicator.POS, posRateStornoReq.getProductType());
-        assertEquals(MessageType.TRX_ADVICE, posRateStornoReq.getMessageType());
 
-        assertEquals(TransactionCode.ISOTransactionCode.MBNET_INSTALMENT_REVERSAL, posRateStornoReq.getISOTransactionalCode().get());
-
-        assertEquals(expectedFields, posRateStornoReq.getFields());
+        assertAll(
+                () -> assertEquals(ProductIndicator.POS, posRateStornoReq.getProductType())
+                , () -> assertEquals(MessageType.TRX_ADVICE, posRateStornoReq.getMessageType())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.MBNET_INSTALMENT_REVERSAL, posRateStornoReq.getISOTransactionalCode().get())
+                , () -> assertEquals(expectedFields, posRateStornoReq.getFields())
+        );
 
     }
 
@@ -413,13 +416,13 @@ class OLBCodecParsingTest {
 
         HISOMessage internetProdajaReq = OLBCodec.decode(internetProdajaString);
 
-        assertEquals(ProductIndicator.POS, internetProdajaReq.getProductType());
-        assertEquals(MessageType.TRX_REQ, internetProdajaReq.getMessageType());
 
-        assertEquals(expectedFields, internetProdajaReq.getFields());
-
-
-        assertEquals(TransactionCode.ISOTransactionCode.MAIL_OR_PHONE_ORDER, internetProdajaReq.getISOTransactionalCode().get());
+        assertAll(
+                () -> assertEquals(ProductIndicator.POS, internetProdajaReq.getProductType())
+                , () -> assertEquals(MessageType.TRX_REQ, internetProdajaReq.getMessageType())
+                , () -> assertEquals(expectedFields, internetProdajaReq.getFields())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.MAIL_OR_PHONE_ORDER, internetProdajaReq.getISOTransactionalCode().get())
+        );
     }
 
     @Test
@@ -453,12 +456,12 @@ class OLBCodecParsingTest {
 
         HISOMessage posPovratReq = OLBCodec.decode(posPovratString);
 
-        assertEquals(ProductIndicator.POS, posPovratReq.getProductType());
-        assertEquals(MessageType.TRX_ADVICE, posPovratReq.getMessageType());
-
-        assertEquals(expectedFields, posPovratReq.getFields());
-
-        assertEquals(TransactionCode.ISOTransactionCode.RETURNS, posPovratReq.getISOTransactionalCode().get());
+        assertAll(
+                () -> assertEquals(ProductIndicator.POS, posPovratReq.getProductType())
+                , () -> assertEquals(MessageType.TRX_ADVICE, posPovratReq.getMessageType())
+                , () -> assertEquals(expectedFields, posPovratReq.getFields())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.RETURNS, posPovratReq.getISOTransactionalCode().get())
+        );
     }
 
     @Test
@@ -493,12 +496,13 @@ class OLBCodecParsingTest {
 
         HISOMessage posKorekcijaPovrataReq = OLBCodec.decode(posKorekcijaPovratSredstava);
 
-        assertEquals(ProductIndicator.POS, posKorekcijaPovrataReq.getProductType());
-        assertEquals(MessageType.TRX_ADVICE, posKorekcijaPovrataReq.getMessageType());
 
-        assertEquals(expectedFields, posKorekcijaPovrataReq.getFields());
-
-        assertEquals(TransactionCode.ISOTransactionCode.CREDIT_ADJUSTMENT, posKorekcijaPovrataReq.getISOTransactionalCode().get());
+        assertAll(
+                () -> assertEquals(ProductIndicator.POS, posKorekcijaPovrataReq.getProductType())
+                , () -> assertEquals(MessageType.TRX_ADVICE, posKorekcijaPovrataReq.getMessageType())
+                , () -> assertEquals(expectedFields, posKorekcijaPovrataReq.getFields())
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.CREDIT_ADJUSTMENT, posKorekcijaPovrataReq.getISOTransactionalCode().get())
+        );
     }
 
 
@@ -534,13 +538,22 @@ class OLBCodecParsingTest {
 
         HISOMessage posKorekcijaPovrataResp = OLBCodec.decode(posKorekcijaPovrataRespString);
 
-        assertEquals(ProductIndicator.POS, posKorekcijaPovrataResp.getProductType());
-        assertEquals(MessageType.TRX_ADVICE_RESP, posKorekcijaPovrataResp.getMessageType());
 
+        assertAll(
+                () -> assertEquals(ProductIndicator.POS, posKorekcijaPovrataResp.getProductType())
+                , () -> assertEquals(MessageType.TRX_ADVICE_RESP, posKorekcijaPovrataResp.getMessageType())
 //        assertEquals(expectedFields, posKorekcijaPovrataResp.getFields());
+                , () -> assertEquals(TransactionCode.ISOTransactionCode.CREDIT_ADJUSTMENT, posKorekcijaPovrataResp.getISOTransactionalCode().get())
+        );
+    }
 
+    @Test
+    public void testDecodingEchoResponseFromPreviousImplementation() {
+        String echoResonseString = " FISO006000015081082200000020000000400000000000000082915381500000100301";
 
-        assertEquals(TransactionCode.ISOTransactionCode.CREDIT_ADJUSTMENT, posKorekcijaPovrataResp.getISOTransactionalCode().get());
+        HISOMessage echoResponse = OLBCodec.decode(echoResonseString);
+
+        assertNotNull(OLBCodec.decode(echoResonseString));
     }
 
 }

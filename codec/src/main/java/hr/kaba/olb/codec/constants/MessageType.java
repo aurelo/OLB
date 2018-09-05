@@ -81,6 +81,7 @@ public enum MessageType {
 
 
     public static MessageType responseFor(MessageType originalMessageType) {
-        return responses.get(originalMessageType);
+        MessageType responseType = responses.get(originalMessageType);
+        return (responseType == null) ? originalMessageType : responseType;
     }
 }

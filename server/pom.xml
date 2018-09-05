@@ -12,4 +12,20 @@
     <artifactId>server</artifactId>
 
 
+    <dependencies>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.1.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>hr.kaba.olb</groupId>
+            <artifactId>codec</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+    </dependencies>
+
 </project>

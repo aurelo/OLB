@@ -6,17 +6,14 @@ import hr.kaba.olb.codec.message.bitmap.PrimaryBitmapField;
 import hr.kaba.olb.codec.message.bitmap.SecondaryBitmapField;
 import hr.kaba.olb.codec.constants.MessageType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static hr.kaba.olb.codec.constants.MessageType.*;
 import static hr.kaba.olb.codec.constants.ProductIndicator.*;
 
 public class FormatRules {
-    public static final List<FormatRule> rules = new ArrayList<>();
+    private static final List<FormatRule> rules = new ArrayList<>();
 
     private static final Map<MessageType, MessageType> behaveAs = new HashMap<>();
 
@@ -427,10 +424,12 @@ public class FormatRules {
         return behaveAs.keySet().contains(messageType) ? behaveAs.get(messageType) : messageType;
     }
 
-    public static boolean containsField(ProductIndicator productIndicator, MessageType messageType, BitmapField field) {
+    static boolean containsField(ProductIndicator productIndicator, MessageType messageType, BitmapField field) {
         final FormatRule rule = new FormatRule(productIndicator, behavesAs(messageType), field);
 
-        return rules.stream().anyMatch(e -> e.equals(rule) && e.getFieldStatus() == FormatRule.FieldStatus.MANDATORY);
+        return rules.stream()
+                    .anyMatch(e -> e.equals(rule) && (e.getFieldStatus().equals(FormatRule.FieldStatus.MANDATORY) || e.getFieldStatus().equals(FormatRule.FieldStatus.OPTIONAL)))
+                ;
 
     }
 
