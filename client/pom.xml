@@ -41,4 +41,11 @@
 
     </dependencies>
 
+
+    <packaging>jar</packaging>
+
+    <build>
+        <finalName>olb-client</finalName>
+    </build>
+
 </project>

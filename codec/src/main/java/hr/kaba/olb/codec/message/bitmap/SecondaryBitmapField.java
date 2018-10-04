@@ -66,7 +66,7 @@ public enum SecondaryBitmapField implements BitmapField{
     P120(56, 9, ProductIndicator.NMM_PRODUCT, "Base24 Key Management"),
     P121(57, 0, ProductIndicator.UNKNOWN_PRODUCT, "TODO"),
     P122(58, 0, ProductIndicator.UNKNOWN_PRODUCT, "TODO"),
-    S123(59, FieldType.ANS, FieldSize.VARIABILE, 553, ProductIndicator.NMM_PRODUCT, "Cryptographic Service Message"),
+    S123(59, FieldType.ANS, FieldSize.VARIABILE, 553, ProductIndicator.NMM_PRODUCT, "Cryptographic Service MessageBuilder"),
     S123A(59, 15, ProductIndicator.ATM_PRODUCT, "Polje depozitne funkcije (trenutno nije podržano)"),
     S124A(60, 4, ProductIndicator.ATM_PRODUCT, "Tip depozita"),
     S125A(61, 4, ProductIndicator.ATM_PRODUCT, "Polje depozitne funkcije. Trenutno nije podrzano"),

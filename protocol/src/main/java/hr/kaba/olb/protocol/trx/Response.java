@@ -24,7 +24,7 @@ public class Response implements ResponseRenderer {
     }
 
     @Override
-    public HISOMessage respond(HISOMessage request, TrxResponse response, String transmissionDateTime) {
+    public HISOMessage respond(HISOMessage request, HisoResponse response, String transmissionDateTime) {
 
         logger.debug("responding on request: {} with response code: {} with ledger balance: {} with available balance: {}", request, response.getResponseCode().getCode(), response.getLedgerBalance().orElse(0), response.getAvailableBalance().orElse(0));
 

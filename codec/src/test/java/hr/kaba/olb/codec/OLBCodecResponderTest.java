@@ -73,7 +73,7 @@ class OLBCodecResponderTest {
 
     @Test
     void shouldReturnOriginalMessageTypeWhenGivenResponse() {
-        String echoResponseString = " FISO006000015081082200000020000000400000000000000090309032600000100301";
+        String echoResponseString = "FISO006000015081082200000020000000400000000000000090309032600000100301";
 
         HISOMessage echoResponse = OLBCodec.decode(echoResponseString);
 

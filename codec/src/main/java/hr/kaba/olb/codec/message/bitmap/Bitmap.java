@@ -1,7 +1,7 @@
 package hr.kaba.olb.codec.message.bitmap;
 
-import hr.kaba.hiso.util.Pair;
 import hr.kaba.olb.codec.constants.ProductIndicator;
+import hr.kaba.olb.util.Pair;
 
 import java.math.BigInteger;
 import java.util.*;

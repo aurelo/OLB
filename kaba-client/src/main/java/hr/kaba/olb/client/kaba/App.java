@@ -6,6 +6,8 @@ import hr.kaba.olb.responders.ora.OraResponder;
 import hr.kaba.olb.util.PropertiesLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -17,28 +19,36 @@ public enum App {
 
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
+    private static final Marker ADMIN = MarkerFactory.getMarker("ADMIN");
+
     private DbSource dbSource;
     private AtomicBoolean shouldRun;
 
     private OlbClient olbClient;
 
 
-    public static void start(String [] args)  {
+    public static void start(String[] args) {
         try {
             INSTANCE.start();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
+            logger.error(ADMIN, e.getMessage());
             e.printStackTrace();
         }
     }
 
     public static void stop(String[] args) {
-        INSTANCE.stop();
+        try {
+            INSTANCE.stop();
+        } catch (InterruptedException e) {
+            logger.error(ADMIN, e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
-        public void start() throws IOException, InterruptedException {
+    public void start() throws IOException, InterruptedException {
 
         shouldRun = new AtomicBoolean(false);
 
@@ -58,15 +68,19 @@ public enum App {
 
         olbClient.start();
 
+        logger.info(ADMIN, "STARTED OLB");
+
     }
 
-    public void stop() {
+    public void stop() throws InterruptedException {
 
         shouldRun.set(false);
 
         olbClient.stop();
 
         dbSource.stop();
+
+        logger.info(ADMIN, "STOPPED OLB");
     }
 
 }

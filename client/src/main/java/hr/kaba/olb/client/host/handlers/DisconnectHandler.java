@@ -21,17 +21,17 @@ public class DisconnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
 
-        logger.debug("should run: {}", shouldRun.get());
+        logger.debug("should run: {} channel: isActive: {} isOpen: {} isRegistered: {} ctx.channel: {} ctx.channel.eventLoop: {}", shouldRun.get(), ctx.channel().isActive(), ctx.channel().isOpen(), ctx.channel().isRegistered(), ctx.channel(), ctx.channel().eventLoop());
 
         if (shouldRun.get()) {
 
-            super.channelInactive(ctx);
             logger.debug("Reconnecting");
             connector.connectOn(ctx.channel().eventLoop());
 
         }
+
 
     }
 }

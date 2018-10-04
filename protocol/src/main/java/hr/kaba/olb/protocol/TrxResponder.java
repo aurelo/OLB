@@ -1,9 +1,9 @@
 package hr.kaba.olb.protocol;
 
 import hr.kaba.olb.codec.message.HISOMessage;
-import hr.kaba.olb.protocol.trx.TrxResponse;
+import hr.kaba.olb.protocol.trx.HisoResponse;
 
 @FunctionalInterface
 public interface TrxResponder {
-    TrxResponse respond(HISOMessage request);
+    HisoResponse respond(HISOMessage request);
 }

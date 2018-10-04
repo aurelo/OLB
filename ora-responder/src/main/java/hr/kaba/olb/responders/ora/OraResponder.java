@@ -7,16 +7,24 @@ import hr.kaba.olb.codec.constants.ResponseCode;
 import hr.kaba.olb.codec.message.HISOMessage;
 import hr.kaba.olb.protocol.TrxResponder;
 import hr.kaba.olb.protocol.trx.Response;
-import hr.kaba.olb.protocol.trx.TrxResponse;
-import hr.kaba.olb.responders.ora.sql.OraRequestMapper;
+import hr.kaba.olb.protocol.trx.HisoResponse;
+import hr.kaba.olb.responders.ora.service.HisoAnswer;
+import hr.kaba.olb.responders.ora.service.HisoDecod;
+import hr.kaba.olb.responders.ora.service.MbuTrans;
+import hr.kaba.olb.responders.ora.service.DbResponder;
+import hr.kaba.olb.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 
 public class OraResponder implements TrxResponder {
     private final static Logger logger = LoggerFactory.getLogger(OraResponder.class);
+
+    public final static Marker DB_MARKER = MarkerFactory.getMarker("DB");
 
     private final static InitiatorType HOST_RESPONDER = InitiatorType.HOST;
 
@@ -26,97 +34,70 @@ public class OraResponder implements TrxResponder {
         this.dbSource = dataSource;
     }
 
+    /**
+     *
+     * @param request
+     * @return
+     */
+
     @Override
-    public TrxResponse respond(HISOMessage request) {
+    public HisoResponse respond(HISOMessage request) {
+
+        logger.debug("Ora responder for message type: {}", request.getMessageType());
 
         try (Connection connection = dbSource.getConnection()) {
 
-//            connection.setAutoCommit(false);
 
-            CallableStatement insertHisoDecodCS = OraRequestMapper.insert_hiso_decod(connection, request);
+            HisoDecod.LogRequestAnswer hisoRequestReturn = HisoDecod.logRequest(connection, request);
 
-            insertHisoDecodCS.execute();
+            MbuTrans.MbuTransAnswer mbuTransAnswer = MbuTrans.logRequest(connection, request, hisoRequestReturn.id());
 
-            Long hisoDecodId = insertHisoDecodCS.getLong("p_iid");
-            Integer isHisoDecodDuplicate = insertHisoDecodCS.getInt("p_iduplicate");
+            HisoAnswer hisoAnswer;
 
-            logger.debug("insertHisoDecodCS return id: {}, isDuplicate: {}", hisoDecodId, isHisoDecodDuplicate);
-
-            insertHisoDecodCS.close();
-
-
-            logger.debug("calling insert mbu trans");
-
-            CallableStatement insertMbuTransCS = OraRequestMapper.insert_mbu_trans(connection, hisoDecodId, request.getMessageType().getCode());
-            insertMbuTransCS.execute();
-
-            logger.debug("after executing insert mbu trans");
-
-            Long mbuTransId = insertMbuTransCS.getLong("p_iTRS_ID");
-            Integer isMbuTransDuplicate = insertMbuTransCS.getInt("p_iDuplicate");
-            String mbuTransStatus = insertMbuTransCS.getString("p_iTrsStatus");
-
-            logger.debug("inserted mbu hiso decod return id: {}, isDuplicate: {}, status: {}", mbuTransId, isMbuTransDuplicate, mbuTransStatus);
-
-//            connection.commit();
-
-            insertMbuTransCS.close();
-
-
-            String responseString;
-            Integer ledgerBalance;
-            Integer availableBalance;
-
-            if (isMbuTransDuplicate == 0) {
-
-                logger.debug("Transaction is not duplicate - calling positive responder");
-
-                CallableStatement positiveResponderCS = OraRequestMapper.positive_responder(connection, mbuTransId);
-                positiveResponderCS.execute();
-
-                responseString = positiveResponderCS.getString("p_rsp_code");
-                ledgerBalance = positiveResponderCS.getInt("p_ledger_balance");
-                availableBalance = positiveResponderCS.getInt("p_available_balance");
-
-                positiveResponderCS.close();
-
+            if (mbuTransAnswer.isDuplicate()) {
+                hisoAnswer = MbuTrans.previousResponse(connection, mbuTransAnswer.id());
             } else {
-
-                logger.debug("transaction is duplicate - returning previous answer for trans id: {}", mbuTransId);
-
-                PreparedStatement selectPreviousResponse = OraRequestMapper.previous_response(connection, mbuTransId);
-
-                ResultSet previousResponseResultSet = selectPreviousResponse.executeQuery();
-
-                previousResponseResultSet.next();
-
-                responseString = previousResponseResultSet.getString("rsp_code");
-                ledgerBalance = previousResponseResultSet.getInt("ledger_balance");
-                availableBalance = previousResponseResultSet.getInt("available_balance");
-
+                hisoAnswer = DbResponder.respond(connection, request, mbuTransAnswer.id());
             }
 
-            TrxResponse trxResponse = new TrxResponse(ResponseCode.from(responseString, MessageType.responseFor(request.getMessageType())), ledgerBalance, availableBalance);
+            Pair<HISOMessage, HisoResponse> responsePair = constructResponse(request, hisoAnswer);
 
+            HISOMessage response = responsePair.getFirst();
+            HisoResponse trxResponse = responsePair.getSecond();
 
-            HISOMessage response = new Response(HOST_RESPONDER).respond(request, trxResponse, Formatters.formatTransmissionDate(LocalDateTime.now()));
-
-            CallableStatement insertHisoRespCS = OraRequestMapper.insert_hiso_resp(connection, response, mbuTransId, hisoDecodId);
-            insertHisoRespCS.execute();
-
-//            connection.commit();
-
-            insertHisoRespCS.close();
+            HisoDecod.logResponse(connection, response, mbuTransAnswer.id(), hisoRequestReturn.id());
 
             return trxResponse;
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new TrxResponse(ResponseCode.TRX_SYSTEM_MALFUNCTION, null, null);
+            logger.error(e.getLocalizedMessage());
+            return new HisoResponse(ResponseCode.TRX_SYSTEM_MALFUNCTION, null, null);
         }
 
 
+    }
+
+    /**
+     *
+     * @param request request being answered to
+     * @param answer response code with balances
+     * @return Pair of response and answer to request
+     */
+    private Pair<HISOMessage, HisoResponse> constructResponse(HISOMessage request, HisoAnswer answer) {
+        String responseString = answer.responseCode();
+        Integer ledgerBalance = answer.ledgerBalance();
+        Integer availableBalance = answer.availableBalance();
+
+
+        ResponseCode responseCode = ResponseCode.from(responseString, MessageType.responseFor(request.getMessageType()));
+        HisoResponse trxResponse = new HisoResponse(responseCode, ledgerBalance, availableBalance);
+
+        logger.debug("trx response: {}", trxResponse);
+
+        HISOMessage response = new Response(HOST_RESPONDER).respond(request, trxResponse, Formatters.formatTransmissionDate(LocalDateTime.now()));
+
+        return new Pair<>(response, trxResponse);
     }
 
 

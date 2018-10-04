@@ -36,6 +36,14 @@ public enum MessageType {
     // what message type is response for message requests
     private final static Map<MessageType, MessageType> responses;
 
+
+    private final static List<MessageType> REQUEST_MESSAGE_TYPES = Arrays.asList(TRX_REQ, TRX_RESP);
+    private final static List<MessageType> REVERSALS_MESSAGE_TYPES = Arrays.asList(TRX_REVERSAL, TRX_REVERSAL_REPEAT, TRX_REVERSAL_RESP);
+    private final static List<MessageType> ADVICE_MESSAGE_TYPES = Arrays.asList(TRX_ADVICE, TRX_ADVICE_RESP, TRX_ADVICE_REPEAT);
+    private final static List<MessageType> AUTHORIZATION_REQUEST_MESSAGE_TYPES = Arrays.asList(AUTHORIZATION_REQ, AUTHORIZATION_RESP);
+    private final static List<MessageType> AUTHORIZATION_ADVICE_MESSAGE_TYPES = Arrays.asList(AUTHORIZATION_ADVICE, AUTHORIZATION_ADVICE_RESP, AUTHORIZATION_ADVICE_REPEAT);
+
+
     static
     {
         codes = Arrays.stream(MessageType.values()).collect(Collectors.toMap(MessageType::getCode, e -> e));
@@ -74,14 +82,40 @@ public enum MessageType {
         return productInicators;
     }
 
-    public static final MessageType[] RESPONSES = {MessageType.TRX_RESP, MessageType.AUTHORIZATION_RESP};
-    public static final MessageType[] REVERSALS = {MessageType.TRX_REVERSAL_RESP};
-    public static final MessageType[] ADVICES = {MessageType.AUTHORIZATION_ADVICE_RESP};
-    public static final MessageType[] NMM_RESPONSES = {MessageType.NMM_RESP};
+    public static final MessageType[] RESPONSES = {TRX_RESP, AUTHORIZATION_RESP, TRX_ADVICE_RESP, AUTHORIZATION_ADVICE_RESP};
+    public static final MessageType[] REVERSALS = {TRX_REVERSAL_RESP};
+    public static final MessageType[] ADVICES = {AUTHORIZATION_ADVICE_RESP};
+    public static final MessageType[] NMM_RESPONSES = {NMM_RESP};
 
 
     public static MessageType responseFor(MessageType originalMessageType) {
         MessageType responseType = responses.get(originalMessageType);
         return (responseType == null) ? originalMessageType : responseType;
+    }
+
+    public boolean isRequest() {
+        return REQUEST_MESSAGE_TYPES.contains(this);
+    }
+
+    public boolean isReversal() {
+        return REVERSALS_MESSAGE_TYPES.contains(this);
+    }
+
+    public boolean isAdvice() {
+        return ADVICE_MESSAGE_TYPES.contains(this);
+    }
+
+    public boolean isAuthorizationRequest() {
+        return AUTHORIZATION_REQUEST_MESSAGE_TYPES.contains(this);
+    }
+
+    public boolean isAuthorizationAdvice() {
+        return AUTHORIZATION_ADVICE_MESSAGE_TYPES.contains(this);
+    }
+
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s", name(), getCode());
     }
 }

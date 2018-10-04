@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 
+@Ignore
 class OraResponderTest {
 
     private final static Logger logger = LoggerFactory.getLogger(OraResponderTest.class);
@@ -40,7 +41,6 @@ class OraResponderTest {
     }
 
     @Test
-    @Ignore
     void respondsShouldInsertAppropriateDbRows() throws SQLException {
 
         OraResponder responder = new OraResponder(source);
@@ -48,8 +48,8 @@ class OraResponderTest {
         String atmDepositString = "ISO0160000100200B238800128A0801800000000100000002100300000000100000628080624000002100624062806281119100055555375590722400899963=191220100000010960005964        S1AWNIPV        IZ SIM                ZAGREB IZ       HR1910122402TES1+0000132400TES10031P11240000000000";
         HISOMessage atmDeposit = OLBCodec.decode(atmDepositString);
 
-//        responder.respond(atmDeposit, ResponseCode.ADVICE_APPROVED, Formatters.formatTransmissionDate(LocalDateTime.now()));
-//        responder.respond(atmDeposit);
+//        responder.logRequest(atmDeposit, ResponseCode.ADVICE_APPROVED, Formatters.formatTransmissionDate(LocalDateTime.now()));
+//        responder.logRequest(atmDeposit);
 
 
 

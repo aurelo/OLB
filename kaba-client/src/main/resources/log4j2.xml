@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+
+    <Properties>
+        <Property name="LOG_DIR">C:\\logs</Property>
+    </Properties>
+
+
+    <Appenders>
+
+        <RollingFile
+                name="fileLogger"
+                fileName="${LOG_DIR}/Kaba_OLB.log"
+                filePattern="${LOG_DIR}/%d{yyyyMMddHH}_Kaba_OLB.log.gz"
+                ignoreException="false"
+        >
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <!--<SizeBasedTriggeringPolicy size="10 MB" />-->
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy max="25" />
+
+        </RollingFile>
+
+
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+            </PatternLayout>
+        </Console>
+
+
+        <SMTP name="mailer"
+              from="mojabanka@kaba.hr"
+              subject="OLB greska"
+              to="zlatko.gudasic@kaba.hr"
+              smtpHost="mail.kb.local"
+              smtpDebug="false"
+              bufferSize="20"
+        >
+            <!--zarezom odvojiti mailove za vise osoba => to="zlatko.gudasic@kaba.hr,kristina.skrtic@kaba.hr"-->
+
+
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />
+
+            <PatternLayout>
+                <pattern>%d{ISO8601}%-4r [%t] %-5p %c %x - %m%n</pattern>
+            </PatternLayout>
+
+        </SMTP>
+
+        <Async name="asyncMailer">
+            <AppenderRef ref="mailer"/>
+            <MarkerFilter marker="ADMIN" onMatch="ACCEPT" onMismatch="DENY" />
+            <MarkerFilter marker="DB" onMatch="ACCEPT" onMismatch="DENY" />
+        </Async>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Root additivity="false" level="debug" >
+            <AppenderRef ref="console" level="debug"/>
+            <AppenderRef ref="fileLogger" level="debug" />
+            <!--<AppenderRef ref="mailer" level="error" />-->
+            <AppenderRef ref="asyncMailer" level="info" />
+        </Root>
+
+    </Loggers>
+
+</Configuration>

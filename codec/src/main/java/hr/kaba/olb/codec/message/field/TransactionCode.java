@@ -13,7 +13,7 @@ public abstract class TransactionCode {
         ,WITHDRAWAL("01", ProductIndicator.TRANSACTION_PRODUCTS)
         ,CREDIT_ADJUSTMENT("22", ProductIndicator.POS_PRODUCT)
         ,GOODS_AND_SERVICES_WITH_CASH_DISBURSEMENT("09", ProductIndicator.POS_PRODUCT)
-        ,RESERVED_FOR_PRIVATE_USE_POS("14", ProductIndicator.POS_PRODUCT)
+        ,WITHDRAWAL_ADJUSTMENT_POS("14", ProductIndicator.POS_PRODUCT)
         ,RESERVED_FOR_PRIVATE_USE("19", ProductIndicator.POS_PRODUCT)
         ,RETURNS("20", ProductIndicator.POS_PRODUCT)
         ,DEPOSIT("21", ProductIndicator.ATM_PRODUCT)
@@ -27,7 +27,9 @@ public abstract class TransactionCode {
         ,MBNET_INSTALMENT("1U", ProductIndicator.POS_PRODUCT)
         ,MBNET_INSTALMENT_REVERSAL("2U", ProductIndicator.POS_PRODUCT)
         ,MBNET_ISPLATA_UZ_OBROCNO_TERECENJE("P0", ProductIndicator.ATM_PRODUCT)
-        ,EGCP_AKTIVACIJA_KARTICE("P1", ProductIndicator.ATM_PRODUCT);
+        ,EGCP_AKTIVACIJA_KARTICE("P1", ProductIndicator.ATM_PRODUCT)
+        ,NMM("XX", ProductIndicator.NMM_PRODUCT)
+        ;
 
         private String code;
         private ProductIndicator[] productIndicators;
@@ -49,6 +51,11 @@ public abstract class TransactionCode {
 
         public static ISOTransactionCode find(String code) {
             return codes.get(code);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s (%s)",  name(), getCode());
         }
     }
 
@@ -112,4 +119,6 @@ public abstract class TransactionCode {
     public abstract ProductIndicator forProduct();
 
     public abstract TransactionCode.ISOTransactionCode getISOTransactionCode();
+
+
 }

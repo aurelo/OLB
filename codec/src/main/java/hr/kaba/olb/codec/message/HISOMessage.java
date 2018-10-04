@@ -24,4 +24,6 @@ public interface HISOMessage {
 
     String dataEncoded();
 
+    String prettyPrint();
+
 }

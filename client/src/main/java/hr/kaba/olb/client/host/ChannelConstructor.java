@@ -6,6 +6,7 @@ import hr.kaba.olb.client.host.handlers.DisconnectHandler;
 import hr.kaba.olb.client.host.handlers.ErrorLogger;
 import hr.kaba.olb.client.host.handlers.HisoMessageDecoder;
 import hr.kaba.olb.client.host.handlers.HisoProtocolHandler;
+import hr.kaba.olb.codec.Protocol;
 import hr.kaba.olb.codec.constants.InitiatorType;
 import hr.kaba.olb.protocol.NmmResponder;
 import hr.kaba.olb.protocol.TrxResponder;
@@ -16,9 +17,12 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.oio.OioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.util.concurrent.EventExecutorGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -26,18 +30,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChannelConstructor {
 
-    private AtomicBoolean shouldRun;
+    private final static Logger logger = LoggerFactory.getLogger(ChannelConstructor.class);
+
     private final Connector connector;
 
     private ChannelConstructor(String host, int port, ReconnectStrategy reconnectStrategy, EventLoopGroup channelLoop, EventExecutorGroup workerLoop, NmmResponder nmmResponder, TrxResponder trxResponder, AtomicBoolean shouldRun) {
 
-        this.shouldRun = shouldRun;
+        logger.info("Constructing channel with: ip: '{}' on port: '{}'", host, port);
 
         Bootstrap bootstrap = new Bootstrap();
 
         bootstrap.group(channelLoop);
         bootstrap.remoteAddress(new InetSocketAddress(host, port));
-        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.channel(OioSocketChannel.class);
 
         connector = new Connector(bootstrap, reconnectStrategy);
 
@@ -48,11 +53,12 @@ public class ChannelConstructor {
 
                 socketChannel.pipeline()
                              .addLast(new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Unpooled.copiedBuffer(Protocol.ETX)))
-                             .addLast(new StringDecoder(Protocol.CHARSET))
+                             .addLast(new StringDecoder(Protocol.HISO_CHARSET))
                              .addLast(new HisoMessageDecoder())
                              .addLast(workerLoop, new HisoProtocolHandler(InitiatorType.HOST, nmmResponder, trxResponder))
+                             .addLast(new DisconnectHandler(connector, shouldRun))
                              .addLast(new ErrorLogger())
-                             .addFirst(new DisconnectHandler(connector, shouldRun));
+                             ;
 
             }
         });
@@ -61,9 +67,6 @@ public class ChannelConstructor {
 
     public ChannelFuture connect() {
         return connector.connect();
-    }
-
-    public void stop() {
     }
 
 

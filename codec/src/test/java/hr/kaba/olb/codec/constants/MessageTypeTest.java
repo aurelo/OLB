@@ -12,4 +12,10 @@ class MessageTypeTest {
         assertThat(MessageType.from("0200"), is(MessageType.TRX_REQ));
     }
 
+
+    @Test
+    void returnsCorrectResponseForTrxAdvice() {
+        assertThat(MessageType.TRX_ADVICE_RESP, is(MessageType.responseFor(MessageType.TRX_ADVICE_REPEAT)));
+    }
 }
+

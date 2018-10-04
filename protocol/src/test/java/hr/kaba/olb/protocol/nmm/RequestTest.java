@@ -1,10 +1,12 @@
 package hr.kaba.olb.protocol.nmm;
 
 import hr.kaba.olb.codec.OLBCodec;
+import hr.kaba.olb.codec.Protocol;
 import hr.kaba.olb.codec.constants.Formatters;
 import hr.kaba.olb.codec.constants.InitiatorType;
 import hr.kaba.olb.codec.constants.NetworkManagementInformationCode;
 import hr.kaba.olb.codec.message.HISOMessage;
+import hr.kaba.olb.codec.message.HisoHeader;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -26,9 +28,14 @@ class RequestTest {
 
         HISOMessage logonMessage = logonRequest.create(transmissionDateTime, systemAuditTraceNumber);
 
-        assertThat(OLBCodec.encode(logonMessage), is("ISO0060000500800822000000000000004000000000000000808153045000042001"));
-        assertThat(OLBCodec.encode(logonMessage), is(OLBCodec.encode(Request.logon(transmissionDateTime, systemAuditTraceNumber))));
+        String expectedMessage = "ISO0060000500800822000000000000004000000000000000808153045000042001";
+        String expectedResponse = HisoHeader.headerFrom(expectedMessage)
+                                            .concat(expectedMessage)
+                                            .concat(Protocol.MESSAGE_TERMINATOR);
 
-    }
+        assertThat(OLBCodec.encodeAndWrap(logonMessage), is(expectedResponse));
+        assertThat(OLBCodec.encodeAndWrap(logonMessage), is(OLBCodec.encodeAndWrap(Request.logon(transmissionDateTime, systemAuditTraceNumber))));
 
-}
+        }
+
+        }

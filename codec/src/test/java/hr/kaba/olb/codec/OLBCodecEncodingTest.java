@@ -12,12 +12,13 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 class OLBCodecEncodingTest {
 
     @Test
-    public void shouldEncodeLoginRequest() {
+    void shouldEncodeLoginRequest() {
         String logonRequestString = "ISO0060000100800822000000000000004000000000000000619111227000001001";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -29,11 +30,11 @@ class OLBCodecEncodingTest {
 
         HISOMessage logonRequest = new OLBMessage(Base24Header.parse("006000010"), MessageType.NMM_REQ, presentFields);
 
-        assertEquals(logonRequestString, OLBCodec.encode(logonRequest));
+        assertThat(OLBCodec.encode(logonRequest), is(logonRequestString));
     }
 
     @Test
-    public void shouldEncodeLoginResponse() {
+    void shouldEncodeLoginResponse() {
         String logonResonseString = "ISO006000051081082200000020000000400000000000000061911125100000100001";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -46,14 +47,13 @@ class OLBCodecEncodingTest {
 
         HISOMessage logonResponse = new OLBMessage(Base24Header.parse("006000051"), MessageType.NMM_RESP, presentFields);
 
-        assertEquals(logonResonseString, OLBCodec.encode(logonResponse));
+        assertThat(OLBCodec.encode(logonResponse), is(logonResonseString));
     }
 
 
     @Test
-    public void shouldEncodeEchoRequest() {
+    void shouldEncodeEchoRequest() {
         String echoRequestString = "ISO0060000100800822000000000000004000000000000000619111236000001301";
-
 
         Map<BitmapField, String> presentFields = new HashMap<>();
 
@@ -64,12 +64,12 @@ class OLBCodecEncodingTest {
 
         HISOMessage echoRequest = new OLBMessage(Base24Header.parse("006000010"), MessageType.NMM_REQ, presentFields);
 
-        assertEquals(echoRequestString, OLBCodec.encode(echoRequest));
+        assertThat(OLBCodec.encode(echoRequest), is(echoRequestString));
 
     }
 
     @Test
-    public void shouldEncodeEchoResponse() {
+    void shouldEncodeEchoResponse() {
         String echoResponseString = "ISO006000015081082200000020000000400000000000000061911125300000100301";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -82,12 +82,12 @@ class OLBCodecEncodingTest {
 
         HISOMessage echoResponse = new OLBMessage(Base24Header.parse("006000015"), MessageType.NMM_RESP, presentFields);
 
-        assertEquals(echoResponseString, OLBCodec.encode(echoResponse));
+        assertThat(OLBCodec.encode(echoResponse), is(echoResponseString));
     }
 
 
     @Test
-    public void shouldEncodeLogoffRequest() {
+    void shouldEncodeLogoffRequest() {
         String logoffRequestString = "ISO0060000400800822000000000000004000000000000000619111247000001002";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -98,12 +98,12 @@ class OLBCodecEncodingTest {
 
         HISOMessage logoffRequest = new OLBMessage(Base24Header.parse("006000040"), MessageType.NMM_REQ, presentFields);
 
-        assertEquals(logoffRequestString, OLBCodec.encode(logoffRequest));
+        assertThat(OLBCodec.encode(logoffRequest), is(logoffRequestString));
 
     }
 
     @Test
-    public void shouldEncodeLogoffResponse() {
+    void shouldEncodeLogoffResponse() {
         String logoffResponseString = "ISO006000015081082200000020000000400000000000000061911125600000100002";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -115,11 +115,11 @@ class OLBCodecEncodingTest {
 
         HISOMessage logoffReponse = new OLBMessage(Base24Header.parse("006000015"), MessageType.NMM_RESP, presentFields);
 
-        assertEquals(logoffResponseString, OLBCodec.encode(logoffReponse));
+        assertThat(OLBCodec.encode(logoffReponse), is(logoffResponseString));
     }
 
     @Test
-    public void shouldEncodeATMDepositRequest() {
+    void shouldEncodeATMDepositRequest() {
         String depositRequestString = "ISO0160000100200B238800128A0801800000000100000002100300000000050000628073926016875093926062806281119100055555375590722400899948=191220100000011170005961        S1AWNIPV        IZ SIM                ZAGREB IZ       HR1910122402TES1+0000132400TES10031P1124000000000";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -146,12 +146,12 @@ class OLBCodecEncodingTest {
 
         HISOMessage depositRequest = new OLBMessage(Base24Header.parse("016000010"), MessageType.TRX_REQ, presentFields);
 
-        assertEquals(depositRequestString, OLBCodec.encode(depositRequest));
+        assertThat(OLBCodec.encode(depositRequest), is(depositRequestString));
 
     }
 
     @Test
-    public void shouldEncodeATMisplataRequest() {
+    void shouldEncodeATMisplataRequest() {
         String atmIsplataReqString = "ISO0160000100200B238820128A0801800000000100000000120000000000400000607091818011583111818060706070021119101247005376020202001939466=190422100000216080003347        A1247005        KABA D.RESA-STARA POSLDUGA RESA    HR HR1910122400PRO1+0000132400PRO10100P1124000080000";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -178,11 +178,11 @@ class OLBCodecEncodingTest {
 
         HISOMessage atmIsplataReq = new OLBMessage(Base24Header.parse("016000010"), MessageType.TRX_REQ, presentFields);
 
-        assertEquals(atmIsplataReqString, OLBCodec.encode(atmIsplataReq));
+        assertThat(OLBCodec.encode(atmIsplataReq), is(atmIsplataReqString));
     }
 
     @Test
-    public void shouldEncodePOSProdajaRateRequest() {
+    void shouldEncodePOSProdajaRateRequest() {
         String posProdajaRateString = "ISO0260000100200B238828128A0801800000000100000061U3200000000047869060709201901160411201606070607003001119100123045376020202000880893=18102210000031179000000001001031E0123045        MULLER KARLOVAC       KARLOVAC        HR1910162400PRO1+00000000192400PRO1041        1124000080000038210000000000000                    000134000000                20600000000002                                                                  E0123045    0000000000010010311 ";
 
         Map<BitmapField, String> presentFields = new HashMap<>();
@@ -212,7 +212,7 @@ class OLBCodecEncodingTest {
 
         HISOMessage posProdajaRate = new OLBMessage(Base24Header.parse("026000010"), MessageType.TRX_REQ, presentFields);
 
-        assertEquals(posProdajaRateString, OLBCodec.encode(posProdajaRate));
+        assertThat(OLBCodec.encode(posProdajaRate), is(posProdajaRateString));
 
     }
 

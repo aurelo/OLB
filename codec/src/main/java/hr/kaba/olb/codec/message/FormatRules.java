@@ -420,7 +420,7 @@ public class FormatRules {
 
     }
 
-    private static MessageType behavesAs(MessageType messageType) {
+    public static MessageType behavesAs(MessageType messageType) {
         return behaveAs.keySet().contains(messageType) ? behaveAs.get(messageType) : messageType;
     }
 

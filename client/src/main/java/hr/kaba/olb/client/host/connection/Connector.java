@@ -36,8 +36,15 @@ public class Connector {
     }
 
 
+
     public void connectOn(EventLoop loop) {
+
+        logger.debug("try to connectOn loop: {}", loop.toString());
+
         if (canScheduleOnEventLoop(loop)) {
+
+            logger.debug("scheduling connect: {}", loop.toString());
+
             loop.schedule(this::connect, reconnectStrategy.getReconnectionInverval(), reconnectStrategy.getReconnectionTimeUnit());
         }
     }

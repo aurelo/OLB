@@ -21,5 +21,10 @@
 
     </dependencies>
 
+    <packaging>jar</packaging>
+
+    <build>
+        <finalName>olb-protocol</finalName>
+    </build>
 
 </project>

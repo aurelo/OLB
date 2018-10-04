@@ -1,7 +1,6 @@
 package hr.kaba.olb.client.host.handlers;
 
 import hr.kaba.olb.client.host.MessageWriter;
-import hr.kaba.olb.client.host.Protocol;
 import hr.kaba.olb.codec.OLBCodec;
 import hr.kaba.olb.codec.constants.InitiatorType;
 import hr.kaba.olb.codec.constants.ProductIndicator;
@@ -13,7 +12,7 @@ import hr.kaba.olb.protocol.TrxResponder;
 import hr.kaba.olb.protocol.nmm.Request;
 import hr.kaba.olb.protocol.nmm.Response;
 import hr.kaba.olb.protocol.nmm.ResponseRenderer;
-import hr.kaba.olb.protocol.trx.TrxResponse;
+import hr.kaba.olb.protocol.trx.HisoResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
@@ -49,6 +48,8 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
         HISOMessage request = (HISOMessage) msg;
 
+        logger.info("REQUEST: [{}]\n{}", ((HISOMessage) msg).dataEncoded(), ((HISOMessage) msg).prettyPrint());
+
         HISOMessage response = null;
 
         if (isNmm(request)) {
@@ -59,7 +60,7 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
         } else if (isTrx(request)) {
 
-            TrxResponse trxResponse = trxResponder.respond(request);
+            HisoResponse trxResponse = trxResponder.respond(request);
 
             response = trxResponseRenderer.respond(request, trxResponse, sysdate());
         }
@@ -67,7 +68,14 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
         if (response != null) {
 
-            MessageWriter.write(ctx, OLBCodec.encode(response));
+
+            logger.info("RESPONSE: [{}]\n{}", response.dataEncoded(), response.prettyPrint());
+
+            String encodedAndWrapedMessage = OLBCodec.encodeAndWrap(response);
+            logger.info("ENCODED: [{}]", encodedAndWrapedMessage);
+
+            MessageWriter.write(ctx, encodedAndWrapedMessage);
+
         }
         else{
 
@@ -82,13 +90,19 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
         HISOMessage logonRequest = Request.logon(sysdate(), Sys.auditTraceNumber());
 
-        MessageWriter.write(ctx, OLBCodec.encode(logonRequest));
+        logger.info("LOGON REQUEST: [{}]\n{}", logonRequest.dataEncoded(), logonRequest.prettyPrint());
+
+        String encodedAndWrapedMessage = OLBCodec.encodeAndWrap(logonRequest);
+
+        logger.info("ENCODED: [{}]", encodedAndWrapedMessage);
+
+        MessageWriter.write(ctx, encodedAndWrapedMessage);
 
         super.channelActive(ctx);
     }
 
     private String sysdate() {
-        return Protocol.transmissionDate.get();
+        return Sys.transmissionDate.get();
     }
 
     private boolean isTrx(HISOMessage request) {

@@ -18,7 +18,7 @@ class OLBCodecParsingTest {
 
     @Test
     void testDecodingLogonRequest() {
-        String logonRequestString = " DISO0060000100800822000000000000004000000000000000619111227000001001";
+        String logonRequestString = "DISO0060000100800822000000000000004000000000000000619111227000001001";
         HISOMessage logonRequest = OLBCodec.decode(logonRequestString);
 
         Map<BitmapField, String> expectedFields = new HashMap<>();
@@ -41,7 +41,7 @@ class OLBCodecParsingTest {
 
     @Test
     void testDecodingLogonResponse() {
-        String logonResonseString = " FISO006000051081082200000020000000400000000000000061911125100000100001";
+        String logonResonseString = "FISO006000051081082200000020000000400000000000000061911125100000100001";
         HISOMessage logonResponse = OLBCodec.decode(logonResonseString);
 
         Map<BitmapField, String> expectedFields = new HashMap<>();
@@ -64,7 +64,7 @@ class OLBCodecParsingTest {
 
     @Test
     void testDecodingEchoRequest() {
-        String echoRequestString = " DISO0060000100800822000000000000004000000000000000619111236000001301";
+        String echoRequestString = "DISO0060000100800822000000000000004000000000000000619111236000001301";
 
         HISOMessage echoRequest = OLBCodec.decode(echoRequestString);
 
@@ -88,7 +88,7 @@ class OLBCodecParsingTest {
 
     @Test
     void testDecodingEchoResponse() {
-        String echoResponseString = " FISO006000015081082200000020000000400000000000000061911125300000100301";
+        String echoResponseString = "FISO006000015081082200000020000000400000000000000061911125300000100301";
 
         Map<BitmapField, String> expectedFields = new HashMap<>();
         expectedFields.put(PrimaryBitmapField.P1, "0400000000000000");
@@ -112,7 +112,7 @@ class OLBCodecParsingTest {
 
     @Test
     public void testDecodingLogoffRequest() {
-        String logoffRequestString = " DISO0060000400800822000000000000004000000000000000619111247000001002";
+        String logoffRequestString = "DISO0060000400800822000000000000004000000000000000619111247000001002";
 
         Map<BitmapField, String> expectedFields = new HashMap<>();
         expectedFields.put(PrimaryBitmapField.P1, "0400000000000000");
@@ -133,7 +133,7 @@ class OLBCodecParsingTest {
 
     @Test
     public void testDecodingLogoffResponse() {
-        String logoffResponseString = " FISO006000015081082200000020000000400000000000000061911125600000100002";
+        String logoffResponseString = "FISO006000015081082200000020000000400000000000000061911125600000100002";
 
         Map<BitmapField, String> expectedFields = new HashMap<>();
         expectedFields.put(PrimaryBitmapField.P1, "0400000000000000");
@@ -549,7 +549,7 @@ class OLBCodecParsingTest {
 
     @Test
     public void testDecodingEchoResponseFromPreviousImplementation() {
-        String echoResonseString = " FISO006000015081082200000020000000400000000000000082915381500000100301";
+        String echoResonseString = "FISO006000015081082200000020000000400000000000000082915381500000100301";
 
         HISOMessage echoResponse = OLBCodec.decode(echoResonseString);
 

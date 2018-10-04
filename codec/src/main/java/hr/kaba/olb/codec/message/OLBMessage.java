@@ -100,4 +100,16 @@ public class OLBMessage implements HISOMessage {
     public String dataEncoded() {
         return Bitmap.encode(getFields());
     }
+
+    public String prettyPrint() {
+        String header = String.format("%s - %s - %s", getProductType(), getMessageType().getCode(), getISOTransactionalCode().orElse(TransactionCode.ISOTransactionCode.NMM));
+
+        String fields = getFields().entrySet()
+                                   .stream()
+                                   .sorted((e1, e2) -> e1.getKey().compare(e1.getKey(), e2.getKey()))
+                                   .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+                                   .collect(Collectors.joining("\n"));
+
+        return String.format("%s\n%s", header, fields);
+    }
 }

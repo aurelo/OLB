@@ -2,18 +2,13 @@ package hr.kaba.olb.codec;
 
 import hr.kaba.olb.codec.constants.InitiatorType;
 import hr.kaba.olb.codec.constants.MessageType;
-import hr.kaba.olb.codec.constants.ResponseCode;
-import hr.kaba.olb.codec.message.Base24Header;
-import hr.kaba.olb.codec.message.HISOMessage;
-import hr.kaba.olb.codec.message.OLBMessage;
+import hr.kaba.olb.codec.message.*;
 import hr.kaba.olb.codec.message.bitmap.Bitmap;
 import hr.kaba.olb.codec.message.bitmap.BitmapField;
 import hr.kaba.olb.codec.message.bitmap.PrimaryBitmapField;
 import hr.kaba.olb.codec.message.bitmap.SecondaryBitmapField;
 
-import hr.kaba.olb.codec.message.FormatRules;
-
-import hr.kaba.hiso.util.Pair;
+import hr.kaba.olb.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +39,8 @@ public class OLBCodec {
         }
 
         EncodedMessageParser parser = new EncodedMessageParser(encodedMessage);
+
+        logger.debug("decoded [{}] - should be of length: {}", encodedMessage, parser.getMessageLength());
 
         Base24Header base24Header = Base24Header.parse(parser.base24Header());
         MessageType messageType = MessageType.from(parser.messageType());
@@ -115,6 +112,26 @@ public class OLBCodec {
     }
 
 
+    /**
+     *
+     * @param encodedMessage
+     * @return
+     */
+    public static String wrap(String encodedMessage) {
+        return String.format("%s%s%s", HisoHeader.headerFrom(encodedMessage), encodedMessage, Protocol.MESSAGE_TERMINATOR);
+    }
+
+
+    /**
+     *
+     * @param message
+     * @return
+     */
+    public static String encodeAndWrap(HISOMessage message) {
+        return wrap(encode(message));
+    }
+
+
     private static boolean encodedMessageToSmall(String encodedMessage){
         return encodedMessage.length() <= ISO.length() + BASE24_HEADER_LENGTH + MESSAGE_TYPE_LENGTH + PRIMARY_BITMAP_LENGTH;
     }
@@ -122,9 +139,11 @@ public class OLBCodec {
     private static class EncodedMessageParser {
         private final String message;
         private final int indexOfFirstLetterAfterISO;
+        private final int messageLength;
 
         public EncodedMessageParser(String message) {
             this.message = message;
+            this.messageLength = HisoHeader.messageLength(message);
             indexOfFirstLetterAfterISO = message.indexOf(ISO) + 3;
         }
 
@@ -143,6 +162,10 @@ public class OLBCodec {
 
         String messageBody() {
             return message.substring(message.indexOf(ISO) + 3 + BASE24_HEADER_LENGTH + MESSAGE_TYPE_LENGTH + PRIMARY_BITMAP_LENGTH);
+        }
+
+        public int getMessageLength() {
+            return messageLength;
         }
     }
 

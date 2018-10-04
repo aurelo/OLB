@@ -42,5 +42,19 @@ class ResponseCodeTest {
         );
     }
 
+    @Test
+    void approvedIsValidForAdviceRepeats() {
+        assertTrue(ResponseCode.TRX_APPROVED.isValidFor(MessageType.TRX_ADVICE_RESP));
+    }
+
+    @Test
+    void shouldGetCorrectResponseCodeForTrxAdvice() {
+        String responseString = "00";
+        MessageType requestType = MessageType.TRX_ADVICE_REPEAT;
+
+        assertThat(ResponseCode.TRX_APPROVED, is(ResponseCode.from(responseString, MessageType.responseFor(requestType))));
+
+    }
+
 
 }

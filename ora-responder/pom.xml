@@ -56,4 +56,10 @@
 
     </dependencies>
 
+    <packaging>jar</packaging>
+
+    <build>
+        <finalName>olb-ora-responder</finalName>
+    </build>
+
 </project>

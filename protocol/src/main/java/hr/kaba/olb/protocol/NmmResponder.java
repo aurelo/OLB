@@ -8,4 +8,6 @@ public interface NmmResponder {
 
     ResponseCode respond(HISOMessage request);
 
+    final static NmmResponder OK_NMM_RESPONDER = request -> ResponseCode.NMM_APPROVED;
+
 }
