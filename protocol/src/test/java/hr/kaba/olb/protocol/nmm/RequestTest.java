@@ -28,10 +28,9 @@ class RequestTest {
 
         HISOMessage logonMessage = logonRequest.create(transmissionDateTime, systemAuditTraceNumber);
 
-        String expectedMessage = "ISO0060000500800822000000000000004000000000000000808153045000042001";
+        String expectedMessage = "ISO0060000500800822000000000000004000000000000000808153045000042001".concat(Protocol.MESSAGE_TERMINATOR);
         String expectedResponse = HisoHeader.headerFrom(expectedMessage)
-                                            .concat(expectedMessage)
-                                            .concat(Protocol.MESSAGE_TERMINATOR);
+                                            .concat(expectedMessage);
 
         assertThat(OLBCodec.encodeAndWrap(logonMessage), is(expectedResponse));
         assertThat(OLBCodec.encodeAndWrap(logonMessage), is(OLBCodec.encodeAndWrap(Request.logon(transmissionDateTime, systemAuditTraceNumber))));

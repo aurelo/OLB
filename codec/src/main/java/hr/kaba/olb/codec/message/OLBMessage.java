@@ -8,6 +8,8 @@ import hr.kaba.olb.codec.constants.ProductIndicator;
 import hr.kaba.olb.codec.message.bitmap.Bitmap;
 import hr.kaba.olb.codec.message.bitmap.BitmapField;
 import hr.kaba.olb.codec.message.bitmap.PrimaryBitmapField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  * @author Zlatko Gudasić
  */
 public class OLBMessage implements HISOMessage {
+
+    private static final Logger logger = LoggerFactory.getLogger(OLBMessage.class);
 
     private final Base24Header header;
     private final MessageType messageType;
@@ -102,12 +106,19 @@ public class OLBMessage implements HISOMessage {
     }
 
     public String prettyPrint() {
+
+        logger.debug("pretty print for message: {} product type: {}", this, getProductType());
+
         String header = String.format("%s - %s - %s", getProductType(), getMessageType().getCode(), getISOTransactionalCode().orElse(TransactionCode.ISOTransactionCode.NMM));
 
         String fields = getFields().entrySet()
                                    .stream()
                                    .sorted((e1, e2) -> e1.getKey().compare(e1.getKey(), e2.getKey()))
-                                   .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+                                   .map(entry -> {
+                                       System.out.println("Entry: " + entry);
+                                       return String.format("%s=%s", entry.getKey(), entry.getValue());
+                                        }
+                                   )
                                    .collect(Collectors.joining("\n"));
 
         return String.format("%s\n%s", header, fields);

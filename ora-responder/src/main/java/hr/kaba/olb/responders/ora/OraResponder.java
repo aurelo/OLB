@@ -8,10 +8,7 @@ import hr.kaba.olb.codec.message.HISOMessage;
 import hr.kaba.olb.protocol.TrxResponder;
 import hr.kaba.olb.protocol.trx.Response;
 import hr.kaba.olb.protocol.trx.HisoResponse;
-import hr.kaba.olb.responders.ora.service.HisoAnswer;
-import hr.kaba.olb.responders.ora.service.HisoDecod;
-import hr.kaba.olb.responders.ora.service.MbuTrans;
-import hr.kaba.olb.responders.ora.service.DbResponder;
+import hr.kaba.olb.responders.ora.service.*;
 import hr.kaba.olb.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +43,11 @@ public class OraResponder implements TrxResponder {
         logger.debug("Ora responder for message type: {}", request.getMessageType());
 
         try (Connection connection = dbSource.getConnection()) {
+
+            if (request.getMessageType().isReject()) {
+                RejectLogger.logReject(connection, request);
+                return HisoResponse.NO_RESPONSE;
+            }
 
 
             HisoDecod.LogRequestAnswer hisoRequestReturn = HisoDecod.logRequest(connection, request);

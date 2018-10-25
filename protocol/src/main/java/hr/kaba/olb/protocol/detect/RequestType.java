@@ -2,6 +2,9 @@ package hr.kaba.olb.protocol.detect;
 
 public enum RequestType {
     UNKNOWN
+
+    ,REJECT
+
     , ATM_WITHDRAWAL_REQUEST
     , ATM_WITHDRAWAL_ADVICE
     , ATM_BALANCE_INQUIRY

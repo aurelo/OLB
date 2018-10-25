@@ -32,4 +32,6 @@ public class HisoResponse {
     public String toString() {
         return String.format("Trx response => code: [%s] - balance [%d - %d]", getResponseCode().getCode(), getLedgerBalance().orElse(0), getAvailableBalance().orElse(0));
     }
+
+    public static final HisoResponse NO_RESPONSE = null;
 }

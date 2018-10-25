@@ -5,5 +5,8 @@ import hr.kaba.olb.protocol.trx.HisoResponse;
 
 @FunctionalInterface
 public interface TrxResponder {
+
+    final HISOMessage NO_RESPONSE = null;
+
     HisoResponse respond(HISOMessage request);
 }

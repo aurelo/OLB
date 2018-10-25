@@ -35,6 +35,8 @@ public class RequestDetector {
             requestType = RequestType.ATM_WITHDRAWAL_ADVICE;
         } else if (messageType.isReversal()) {
             requestType = RequestType.ATM_REVERSAL;
+        } else if (messageType.isReject()) {
+            requestType = RequestType.REJECT;
         }
 
         return requestType;
@@ -120,6 +122,8 @@ public class RequestDetector {
             if (isoTransactionCode == TransactionCode.ISOTransactionCode.GOODS_AND_SERVICES) {
                 requestType = RequestType.POS_AUTHORIZATION_ADVICE;
             }
+        } else if (messageType.isReject()) {
+            requestType = RequestType.REJECT;
         }
 
         return requestType;

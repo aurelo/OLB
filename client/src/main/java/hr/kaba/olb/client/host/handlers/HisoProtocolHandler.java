@@ -6,6 +6,7 @@ import hr.kaba.olb.codec.constants.InitiatorType;
 import hr.kaba.olb.codec.constants.ProductIndicator;
 import hr.kaba.olb.codec.constants.ResponseCode;
 import hr.kaba.olb.codec.message.HISOMessage;
+import hr.kaba.olb.logger.gelf.HisoLog4j2GelfLogger;
 import hr.kaba.olb.protocol.NmmResponder;
 import hr.kaba.olb.protocol.Sys;
 import hr.kaba.olb.protocol.TrxResponder;
@@ -17,12 +18,16 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import java.util.Arrays;
 
 public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(HisoProtocolHandler.class);
+
+    private final static Marker HISO_REQ_RESP_MARKER = MarkerFactory.getMarker("HISO_REQ_RESP");
 
     private final InitiatorType respondAs;
 
@@ -50,6 +55,11 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
         logger.info("REQUEST: [{}]\n{}", ((HISOMessage) msg).dataEncoded(), ((HISOMessage) msg).prettyPrint());
 
+        HisoLog4j2GelfLogger gelfRequestLogger = new HisoLog4j2GelfLogger(request);
+        gelfRequestLogger.log(() -> logger.info(HISO_REQ_RESP_MARKER, "Hiso request [{}]", request.dataEncoded()));
+
+
+
         HISOMessage response = null;
 
         if (isNmm(request)) {
@@ -74,8 +84,14 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
             String encodedAndWrapedMessage = OLBCodec.encodeAndWrap(response);
             logger.info("ENCODED: [{}]", encodedAndWrapedMessage);
 
+            HisoLog4j2GelfLogger gelfResponseLogger = new HisoLog4j2GelfLogger(response);
+            gelfResponseLogger.log(() -> logger.info(HISO_REQ_RESP_MARKER, "Hiso response [{}]", request.dataEncoded()));
+
             MessageWriter.write(ctx, encodedAndWrapedMessage);
 
+        }
+        else if (response == HisoResponse.NO_RESPONSE){
+            logger.info("Not sending response because request was Reject message");
         }
         else{
 

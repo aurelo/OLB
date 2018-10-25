@@ -53,10 +53,31 @@
 
         </SMTP>
 
+        <Gelf name="gelf" host="tcp:kbapp03.kb.local" port="12201" version="1.0" extractStackTrace="true"
+              filterStackTrace="true" mdcProfiling="true" includeFullMdc="true" maximumMessageSize="8192"
+              originHost="kbaps15"
+              ignoreExceptions="true">
+            <Field name="timestamp" pattern="%d{dd MMM yyyy HH:mm:ss,SSS}" />
+            <Field name="level" pattern="%level" />
+            <Field name="simpleClassName" pattern="%C{1}" />
+            <Field name="className" pattern="%C" />
+            <Field name="server" pattern="%host" />
+            <Field name="server.fqdn" pattern="%host{fqdn}" />
+            <DynamicMdcFields regex="mdc.*" />
+            <DynamicMdcFields regex="(mdc|MDC)fields" />
+        </Gelf>
+
         <Async name="asyncMailer">
             <AppenderRef ref="mailer"/>
             <MarkerFilter marker="ADMIN" onMatch="ACCEPT" onMismatch="DENY" />
             <MarkerFilter marker="DB" onMatch="ACCEPT" onMismatch="DENY" />
+        </Async>
+
+        <Async name="asyncGelf">
+            <AppenderRef ref="gelf"/>
+            <MarkerFilter marker="ADMIN" onMatch="ACCEPT" onMismatch="DENY" />
+            <MarkerFilter marker="DB" onMatch="ACCEPT" onMismatch="DENY" />
+            <MarkerFilter marker="HISO_REQ_RESP" onMatch="ACCEPT" onMismatch="DENY" />
         </Async>
 
     </Appenders>
@@ -67,7 +88,8 @@
             <AppenderRef ref="console" level="debug"/>
             <AppenderRef ref="fileLogger" level="debug" />
             <!--<AppenderRef ref="mailer" level="error" />-->
-            <AppenderRef ref="asyncMailer" level="info" />
+            <!--<AppenderRef ref="asyncMailer" level="info" />-->
+            <!--<AppenderRef ref="asyncGelf" level="info" />-->
         </Root>
 
     </Loggers>

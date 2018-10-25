@@ -30,12 +30,13 @@ public class OLBCodec {
      * @param encodedMessage
      * @return OLB message (POJO) parsed from encoded message
      */
-    public static HISOMessage decode(String encodedMessage) {
+    public static HISOMessage decode(String encodedMessage) throws MalformedHisoMessageException {
 
         Objects.nonNull(encodedMessage);
 
-        if (encodedMessageToSmall(encodedMessage)) {
-            throw new IllegalArgumentException(String.format("OLB message can not be parsed from %s", encodedMessage));
+        if (!validIsoMessage(encodedMessage) || encodedMessageToSmall(encodedMessage)) {
+//            throw new IllegalArgumentException(String.format("OLB message can not be parsed from %s", encodedMessage));
+            throw new MalformedHisoMessageException(String.format("OLB message can not be parsed from %s", encodedMessage));
         }
 
         EncodedMessageParser parser = new EncodedMessageParser(encodedMessage);
@@ -118,7 +119,9 @@ public class OLBCodec {
      * @return
      */
     public static String wrap(String encodedMessage) {
-        return String.format("%s%s%s", HisoHeader.headerFrom(encodedMessage), encodedMessage, Protocol.MESSAGE_TERMINATOR);
+        String messagePlusTerminator = String.format("%s%s", encodedMessage, Protocol.MESSAGE_TERMINATOR);
+//        return String.format("%s%s%s", HisoHeader.headerFrom(encodedMessage), encodedMessage, Protocol.MESSAGE_TERMINATOR);
+        return String.format("%s%s", HisoHeader.headerFrom(messagePlusTerminator), messagePlusTerminator);
     }
 
 
@@ -131,6 +134,9 @@ public class OLBCodec {
         return wrap(encode(message));
     }
 
+    private static boolean validIsoMessage(String encodedMessage) {
+        return encodedMessage.contains(ISO);
+    }
 
     private static boolean encodedMessageToSmall(String encodedMessage){
         return encodedMessage.length() <= ISO.length() + BASE24_HEADER_LENGTH + MESSAGE_TYPE_LENGTH + PRIMARY_BITMAP_LENGTH;

@@ -6,6 +6,7 @@ import hr.kaba.olb.codec.constants.ProductIndicator;
 import hr.kaba.olb.codec.message.HISOMessage;
 import hr.kaba.olb.codec.message.bitmap.BitmapField;
 import hr.kaba.olb.codec.message.bitmap.PrimaryBitmapField;
+import hr.kaba.olb.protocol.TrxResponder;
 import hr.kaba.olb.protocol.trx.format.Atm44;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,11 @@ public class Response implements ResponseRenderer {
 
     @Override
     public HISOMessage respond(HISOMessage request, HisoResponse response, String transmissionDateTime) {
+
+        if (response == HisoResponse.NO_RESPONSE) {
+            return TrxResponder.NO_RESPONSE;
+        }
+
 
         logger.debug("responding on request: {} with response code: {} with ledger balance: {} with available balance: {}", request, response.getResponseCode().getCode(), response.getLedgerBalance().orElse(0), response.getAvailableBalance().orElse(0));
 

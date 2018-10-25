@@ -28,10 +28,9 @@ class ResponseTest {
         HISOMessage hostResponse = hostResponder.respond(echoRequest, ResponseCode.NMM_APPROVED, transmissionDateTime);
 
 
-        String expectedMessage = "ISO006000015081082200000020000000400000000000000110306553700000100301";
+        String expectedMessage = "ISO006000015081082200000020000000400000000000000110306553700000100301".concat(Protocol.MESSAGE_TERMINATOR);
         String expectedResponse = HisoHeader.headerFrom(expectedMessage)
-                                            .concat(expectedMessage)
-                                            .concat(Protocol.MESSAGE_TERMINATOR);
+                                            .concat(expectedMessage);
 
         assertThat(OLBCodec.encodeAndWrap(hostResponse), is(expectedResponse));
 
