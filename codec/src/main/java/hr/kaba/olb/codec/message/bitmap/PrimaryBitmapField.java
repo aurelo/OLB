@@ -2,10 +2,8 @@ package hr.kaba.olb.codec.message.bitmap;
 
 import hr.kaba.olb.codec.constants.ProductIndicator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 
 
 public enum PrimaryBitmapField implements BitmapField{
@@ -162,5 +160,7 @@ public enum PrimaryBitmapField implements BitmapField{
         Optional<PrimaryBitmapField> result = Arrays.stream(PrimaryBitmapField.values()).filter(e -> position == e.getPosition()).findFirst();
         return result.orElseThrow(() -> new EnumConstantNotPresentException(PrimaryBitmapField.class, "Could not find field"));
     }
+
+    public final static Predicate<Map.Entry<BitmapField, String>> TYPE = (entry) -> entry.getKey() instanceof PrimaryBitmapField;
 
 }

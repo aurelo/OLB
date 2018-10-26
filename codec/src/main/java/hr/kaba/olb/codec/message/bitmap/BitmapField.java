@@ -48,7 +48,7 @@ public interface BitmapField extends Comparator<BitmapField> {
         return o1.getOrderingPosition() - o2.getOrderingPosition();
     }
 
-    default public String encoded(String value) {
+    default String encoded(String value) {
 
         String encodedValue;
 

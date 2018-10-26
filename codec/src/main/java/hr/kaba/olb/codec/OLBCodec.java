@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class OLBCodec {
 
@@ -96,9 +97,18 @@ public class OLBCodec {
         // leave only fields required for appropriate message type / product
         responseFieldsValues = FormatRules.filterFields(originalMessage.getProductType(), responseMessageType, responseFieldsValues);
 
-        logger.debug("filtered response fileds: {}", responseFieldsValues);
+        String secondaryBitmap = calculateSecondaryBitmap(responseFieldsValues);
+
+        responseFieldsValues.put(PrimaryBitmapField.P1, secondaryBitmap);
+
+        logger.debug("filtered response fields: {}", responseFieldsValues);
 
         return new OLBMessage(responseHeader, responseMessageType, responseFieldsValues);
+    }
+
+
+    private static String calculateSecondaryBitmap(Map<BitmapField, String> fields) {
+        return Bitmap.bitmapFromFields(fields, SecondaryBitmapField.TYPE);
     }
 
 

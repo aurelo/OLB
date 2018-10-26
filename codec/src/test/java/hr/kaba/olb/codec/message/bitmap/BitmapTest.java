@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BitmapTest {
 
         @Test
-        public void testHexToBinaryConversion() {
+        void testHexToBinaryConversion() {
             assertEquals("1011001000111000100000000000000100101000101000001000000000011000", Bitmap.hexToBinary("B238800128A08018"));
             assertEquals("1000001000100000000000000000000000000000000000000000000000000000", Bitmap.hexToBinary("8220000000000000"));
             assertEquals("0000010000000000000000000000000000000000000000000000000000000000", Bitmap.hexToBinary("0400000000000000"));
@@ -20,7 +20,7 @@ class BitmapTest {
         }
 
         @Test
-        public void testBinaryToHexConversion() {
+        void testBinaryToHexConversion() {
             assertEquals("B238800128A08018", Bitmap.binaryToHex("1011001000111000100000000000000100101000101000001000000000011000"));
             assertEquals("8220000000000000", Bitmap.binaryToHex("1000001000100000000000000000000000000000000000000000000000000000"));
             assertEquals("0400000000000000", Bitmap.binaryToHex("0000010000000000000000000000000000000000000000000000000000000000"));
@@ -30,7 +30,7 @@ class BitmapTest {
         }
 
         @Test
-        public void testFieldValuesPairing() {
+        void testFieldValuesPairing() {
 
             String bitmapToDecode = "8220000000000000";
             String messageToPair = "04000000000000000619111227000001001";
@@ -51,18 +51,19 @@ class BitmapTest {
         }
 
         @Test
-        public void testEncodingBitmapFromFields() {
+        void testEncodingBitmapFromFields() {
             Map<BitmapField, String> fields = new HashMap<>();
 
             fields.put(PrimaryBitmapField.P1, "00001");
             fields.put(PrimaryBitmapField.P7, "1235");
 
-            assertEquals("1000001000000000000000000000000000000000000000000000000000000000", Bitmap.binaryBitmapFromFields(fields));
+//            assertEquals("1000001000000000000000000000000000000000000000000000000000000000", Bitmap.bitmapFromFields(fields, PrimaryBitmapField.TYPE));
+            assertEquals("8200000000000000", Bitmap.bitmapFromFields(fields, PrimaryBitmapField.TYPE));
         }
 
 
         @Test
-        public void testEnodingPrimaryBitmap() {
+        void testEnodingPrimaryBitmap() {
             Map<BitmapField, String> fields = new HashMap<>();
 
             fields.put(PrimaryBitmapField.P1, "0000000010000000");
@@ -86,25 +87,25 @@ class BitmapTest {
             String hexPrimaryBitmap = "B238800128A08018";
             String binaryPrimaryBitmap = "1011001000111000100000000000000100101000101000001000000000011000";
 
-            assertEquals(binaryPrimaryBitmap, Bitmap.binaryBitmapFromFields(fields));
-            assertEquals(hexPrimaryBitmap, Bitmap.hexBitmapFromFields(fields));
+//            assertEquals(binaryPrimaryBitmap, Bitmap.bitmapFromFields(fields, PrimaryBitmapField.TYPE));
+            assertEquals(hexPrimaryBitmap, Bitmap.bitmapFromFields(fields, PrimaryBitmapField.TYPE));
         }
 
 
         @Test
-        public void testEncodingSecondaryBitmapFields() {
+        void testEncodingSecondaryBitmapFields() {
             String hexSecondaryBitmap = "0000000010000000";
 
             Map<BitmapField, String> fields = new HashMap<>();
 
             fields.put(SecondaryBitmapField.S100, "24000000000");
 
-            assertEquals(hexSecondaryBitmap, Bitmap.hexBitmapFromFields(fields));
+            assertEquals(hexSecondaryBitmap, Bitmap.bitmapFromFields(fields, SecondaryBitmapField.TYPE));
         }
 
 
         @Test
-        public void testEncodingMultipleFields() {
+        void testEncodingMultipleFields() {
             String expectedString = "0000004210000004220030000000176431063008020502132409551606300630000512876375590722400800441=20052010000000000000041191      00NF058911        TOTAL MKT FR          NANTERRE     FRAFR191016EUROEURO-12000000192400PRO1031000000000200041191      06300955160006300000000000000000176099                              1124000080000038000000000000000000000000000000000000000";
 
 

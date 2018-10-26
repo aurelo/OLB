@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -150,8 +151,12 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
 
     }
 
-
-    public static String binaryBitmapFromFields(Map<BitmapField, String> fields) {
+    /**
+     *
+     * @param fields
+     * @return
+     */
+    private static String binaryBitmapFromFields(Map<BitmapField, String> fields) {
 
         String[] binaryBitmap = new String[LENGTH];
 
@@ -164,16 +169,34 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
 
     }
 
-    public static String hexBitmapFromFields(Map<BitmapField, String> fields) {
+    /**
+     *
+     * @param fields
+     * @return
+     */
+    private static String hexBitmapFromFields(Map<BitmapField, String> fields) {
         return binaryToHex(binaryBitmapFromFields(fields));
     }
 
+    public static String bitmapFromFields(Map<BitmapField, String> fields, Predicate<Map.Entry<BitmapField, String>> filterFields) {
 
-    public static String hexToBinary(String hexRepresentation) {
+        String binaryBitmap = binaryBitmapFromFields(
+                fields
+                        .entrySet()
+                        .stream()
+                        .filter(filterFields)
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+        );
+
+        return binaryToHex(binaryBitmap);
+    }
+
+
+    static String hexToBinary(String hexRepresentation) {
         return String.format("%64s", new BigInteger(hexRepresentation, 16).toString(2)).replace(" ", "0");
     }
 
-    public static String binaryToHex(String binaryRepresentation) {
+    static String binaryToHex(String binaryRepresentation) {
         return String.format("%16s", new BigInteger(binaryRepresentation, 2).toString(16).toUpperCase()).replace(" ", "0");
     }
 

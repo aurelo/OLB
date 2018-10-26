@@ -2,10 +2,8 @@ package hr.kaba.olb.codec.message.bitmap;
 
 import hr.kaba.olb.codec.constants.ProductIndicator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 
 public enum SecondaryBitmapField implements BitmapField{
     P65(1, 0, ProductIndicator.UNKNOWN_PRODUCT, "TODO"),
@@ -154,5 +152,6 @@ public enum SecondaryBitmapField implements BitmapField{
         return result.orElseThrow(() -> new EnumConstantNotPresentException(SecondaryBitmapField.class, "Could not find field"));
     }
 
+    public final static Predicate<Map.Entry<BitmapField, String>> TYPE = (entry) -> entry.getKey() instanceof SecondaryBitmapField;
 
 }

@@ -58,6 +58,8 @@ public class OLBMessage implements HISOMessage {
 
     @Override
     public String getPrimaryBitmap() {
+        return Bitmap.bitmapFromFields(getFields(), PrimaryBitmapField.TYPE);
+        /*
         String binaryBitmap = Bitmap.binaryBitmapFromFields(
                 getFields()
                         .entrySet()
@@ -67,6 +69,7 @@ public class OLBMessage implements HISOMessage {
         );
 
         return Bitmap.binaryToHex(binaryBitmap);
+        */
     }
 
     @Override

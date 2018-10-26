@@ -30,6 +30,7 @@ class OLBCodecResponderTest {
 
         Map<BitmapField, String> expectedFields = new HashMap<>();
 
+        expectedFields.put(PrimaryBitmapField.P1, "0000000000000002");
         expectedFields.put(PrimaryBitmapField.P3, "202000");
         expectedFields.put(PrimaryBitmapField.P4, "000000019900");
         expectedFields.put(PrimaryBitmapField.P7, "0704151909");
@@ -48,7 +49,7 @@ class OLBCodecResponderTest {
         assertAll(
                 () -> assertEquals(MessageType.TRX_ADVICE_RESP, posAdviceResponse.getMessageType())
                 , () -> assertEquals(expectedFields, posAdviceResponse.getFields())
-//                , () -> assertEquals(posAdviceResponseString, OLBCodec.encode(posAdviceResponse))
+                //, () -> assertEquals(posAdviceResponseString, OLBCodec.encode(posAdviceResponse))
         );
 
 
@@ -84,6 +85,24 @@ class OLBCodecResponderTest {
         HISOMessage echoReponseResponse = OLBCodec.respondTo(echoResponse, InitiatorType.HOST, responseFields);
 
         assertThat(echoReponseResponse.getMessageType(), is(echoResponse.getMessageType()));
+
+    }
+
+    @Test
+    void shouldRespondToReversalAdviceRepeat() {
+        String posReversalAdviceRepatString = "ISO0260000500421B23880812EA080180000004010000004000030000000000100102408524900099814434810231023151119100265006215590722400899948=191200000000404355782917V0265006        ERSTE BANK CROATIA    ZAGREB          HR1910162402TES1+00000000192400TES103100000000010000000000404310231443420010230000000000112400000000003820700000000404300000000000000000000000";
+        HISOMessage posReversalAdviceRepeat = OLBCodec.decode(posReversalAdviceRepatString);
+
+        Map<BitmapField, String> responseFields = new HashMap<>();
+        responseFields.put(PrimaryBitmapField.P7, "1024105249");
+        responseFields.put(PrimaryBitmapField.P39, "00");
+
+        HISOMessage response = OLBCodec.respondTo(posReversalAdviceRepeat, InitiatorType.HOST, responseFields);
+
+        assertAll(
+                () -> assertThat(response.getMessageType(), is(MessageType.TRX_REVERSAL_RESP)),
+                () -> assertThat(response.getFields().get(PrimaryBitmapField.P1), is("0000004000000000"))
+        );
 
     }
 

@@ -27,7 +27,7 @@ public class Request {
 
         this.fixedFields = new HashMap<>();
         fixedFields.put(SecondaryBitmapField.P70, requestType.getCode());
-        fixedFields.put(PrimaryBitmapField.P1, Bitmap.hexBitmapFromFields(fixedFields));
+        fixedFields.put(PrimaryBitmapField.P1, Bitmap.bitmapFromFields(fixedFields, SecondaryBitmapField.TYPE));
 
     }
 
@@ -42,7 +42,7 @@ public class Request {
         return variableFields;
     }
 
-    public HISOMessage create(String transmissionDateTime, String sysTraceAuditNumber) {
+    HISOMessage create(String transmissionDateTime, String sysTraceAuditNumber) {
         return new OLBMessage(header, MessageType.NMM_REQ, requestData(transmissionDateTime, sysTraceAuditNumber));
     }
 

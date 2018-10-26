@@ -27,15 +27,35 @@ public class RequestDetector {
         MessageType messageType = request.getMessageType();
         logger.debug("dispatching for ATM - message type: {}", messageType);
 
-        if (request.getISOTransactionalCode().get() == TransactionCode.ISOTransactionCode.BALANCE_INQUIRY) {
-            requestType = RequestType.ATM_BALANCE_INQUIRY;
-        } else if (messageType.isRequest()) {
-            requestType = RequestType.ATM_WITHDRAWAL_REQUEST;
-        } else if (messageType.isAdvice()) {
+        TransactionCode.ISOTransactionCode transactionCode;
+
+        if (!request.getISOTransactionalCode().isPresent()) {
+            return requestType;
+        } else {
+            transactionCode = request.getISOTransactionalCode().get();
+        }
+
+        // ATM REQUESTS
+        if (messageType.isRequest()) {
+            if (transactionCode == TransactionCode.ISOTransactionCode.BALANCE_INQUIRY){
+                requestType = RequestType.ATM_BALANCE_INQUIRY;
+            } else if (transactionCode == TransactionCode.ISOTransactionCode.DEPOSIT) {
+                requestType = RequestType.ATM_DEPOSIT;
+            } else if (transactionCode == TransactionCode.ISOTransactionCode.WITHDRAWAL) {
+                requestType = RequestType.ATM_WITHDRAWAL_REQUEST;
+            }
+
+        }
+
+        if (messageType.isAdvice()) {
             requestType = RequestType.ATM_WITHDRAWAL_ADVICE;
-        } else if (messageType.isReversal()) {
+        }
+
+        if (messageType.isReversal()) {
             requestType = RequestType.ATM_REVERSAL;
-        } else if (messageType.isReject()) {
+        }
+
+        if (messageType.isReject()) {
             requestType = RequestType.REJECT;
         }
 
