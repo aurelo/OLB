@@ -9,23 +9,29 @@ public class HisoResponse {
     private final ResponseCode responseCode;
     private final Optional<Integer> ledgerBalance;
     private final Optional<Integer> availableBalance;
+    private final Optional<String> approvedCode;
 
-    public HisoResponse(ResponseCode responseCode, Integer ledgerBalance, Integer availableBalance) {
+    public HisoResponse(ResponseCode responseCode, Integer ledgerBalance, Integer availableBalance, String approvedCode) {
         this.responseCode = responseCode;
         this.ledgerBalance = Optional.ofNullable(ledgerBalance);
         this.availableBalance = Optional.ofNullable(availableBalance);
+        this.approvedCode = Optional.ofNullable(approvedCode);
     }
 
-    public ResponseCode getResponseCode() {
+    ResponseCode getResponseCode() {
         return responseCode;
     }
 
-    public Optional<Integer> getLedgerBalance() {
+    Optional<Integer> getLedgerBalance() {
         return ledgerBalance;
     }
 
-    public Optional<Integer> getAvailableBalance() {
+    Optional<Integer> getAvailableBalance() {
         return availableBalance;
+    }
+
+    public Optional<String> getApprovedCode() {
+        return approvedCode;
     }
 
     @Override

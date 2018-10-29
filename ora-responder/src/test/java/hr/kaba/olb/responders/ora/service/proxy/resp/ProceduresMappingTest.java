@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProceduresMappingTest {
 
     @Test
-    void shouldHaveMappingForPosPurchaseAdvise() {
+    void shouldHaveMappingForAllExceptUnknownAndReject() {
         Arrays.asList(RequestType.values())
               .stream()
               .filter(r -> r != RequestType.UNKNOWN && r != RequestType.REJECT)

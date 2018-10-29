@@ -55,14 +55,19 @@ public class OraResponder implements TrxResponder {
             MbuTrans.MbuTransAnswer mbuTransAnswer = MbuTrans.logRequest(connection, request, hisoRequestReturn.id());
 
             HisoAnswer hisoAnswer;
+            String approvalCode = null;
 
             if (mbuTransAnswer.isDuplicate()) {
                 hisoAnswer = MbuTrans.previousResponse(connection, mbuTransAnswer.id());
+                approvalCode = MbuTrans.getApprovalCode(connection, mbuTransAnswer.id());
             } else {
                 hisoAnswer = DbResponder.respond(connection, request, mbuTransAnswer.id());
+                if (request.getMessageType() == MessageType.AUTHORIZATION_REQ || request.getMessageType() == MessageType.TRX_REQ) {
+                    approvalCode = MbuTrans.assignApprovalCode(connection, mbuTransAnswer.id());
+                }
             }
 
-            Pair<HISOMessage, HisoResponse> responsePair = constructResponse(request, hisoAnswer);
+            Pair<HISOMessage, HisoResponse> responsePair = constructResponse(request, hisoAnswer, approvalCode);
 
             HISOMessage response = responsePair.getFirst();
             HisoResponse trxResponse = responsePair.getSecond();
@@ -74,7 +79,7 @@ public class OraResponder implements TrxResponder {
 
         } catch (SQLException e) {
             logger.error(e.getLocalizedMessage());
-            return new HisoResponse(ResponseCode.TRX_SYSTEM_MALFUNCTION, null, null);
+            return new HisoResponse(ResponseCode.TRX_SYSTEM_MALFUNCTION, null, null, null);
         }
 
 
@@ -84,16 +89,17 @@ public class OraResponder implements TrxResponder {
      *
      * @param request request being answered to
      * @param answer response code with balances
+     * @param approvalCode Authorisation Identification Response - used as host transaction non unique marker
      * @return Pair of response and answer to request
      */
-    private Pair<HISOMessage, HisoResponse> constructResponse(HISOMessage request, HisoAnswer answer) {
+    private Pair<HISOMessage, HisoResponse> constructResponse(HISOMessage request, HisoAnswer answer, String approvalCode) {
         String responseString = answer.responseCode();
         Integer ledgerBalance = answer.ledgerBalance();
         Integer availableBalance = answer.availableBalance();
 
 
         ResponseCode responseCode = ResponseCode.from(responseString, MessageType.responseFor(request.getMessageType()));
-        HisoResponse trxResponse = new HisoResponse(responseCode, ledgerBalance, availableBalance);
+        HisoResponse trxResponse = new HisoResponse(responseCode, ledgerBalance, availableBalance, approvalCode);
 
         logger.debug("trx response: {}", trxResponse);
 

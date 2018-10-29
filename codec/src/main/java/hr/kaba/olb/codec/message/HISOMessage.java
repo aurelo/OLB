@@ -8,7 +8,8 @@ import hr.kaba.olb.codec.constants.ProductIndicator;
 import java.util.Map;
 import java.util.Optional;
 
-public interface HISOMessage {
+public interface
+HISOMessage {
 
     Base24Header getHeader();
     ProductIndicator getProductType();

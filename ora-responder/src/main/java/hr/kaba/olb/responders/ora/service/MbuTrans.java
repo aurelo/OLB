@@ -1,6 +1,7 @@
 package hr.kaba.olb.responders.ora.service;
 
 import hr.kaba.olb.codec.message.HISOMessage;
+import jdk.nashorn.internal.codegen.CompilerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,6 +91,30 @@ public class MbuTrans {
 
     }
 
+
+    public static String assignApprovalCode(Connection connection, Long mbuTransId) throws SQLException {
+
+        logger.debug("assigning approval code for transaction {}", mbuTransId);
+
+        CallableStatement assignedApprovalCode = mapAssignApprovalCode(connection, mbuTransId);
+
+        assignedApprovalCode.execute();
+
+        return assignedApprovalCode.getString(1);
+    }
+
+
+    public static String getApprovalCode(Connection connection, Long mbuTransId) throws SQLException {
+        logger.debug("getting approval code for transaction {}", mbuTransId);
+
+        CallableStatement assignedApprovalCode = mapGetApprovalCode(connection, mbuTransId);
+
+        assignedApprovalCode.execute();
+
+        return assignedApprovalCode.getString(1);
+    }
+
+
     /**
      *
      */
@@ -116,6 +141,13 @@ public class MbuTrans {
         return callableStatement;
     }
 
+    private static final String SELECT_TRX_RESPONSE_FIELDS = "select   mt.rsp_code\n" +
+            ",        mt.ledger_balance \n" +
+            ",        mt.available_balance \n" +
+            "from     mbu_trans mt \n" +
+            "where    mt.pk_id = ?\n" +
+            "\n";
+
 
     private static PreparedStatement mapFetchPreviousResponse(Connection connection, long mbuTransId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(SELECT_TRX_RESPONSE_FIELDS);
@@ -125,12 +157,29 @@ public class MbuTrans {
         return statement;
     }
 
+    private static final String ASSIGN_APPROVAL_CODE = "{? = call mbuintf.assign_approval_code(p_id_trs => ?)}";
 
-    private static final String SELECT_TRX_RESPONSE_FIELDS = "select   mt.rsp_code\n" +
-            ",        mt.ledger_balance \n" +
-            ",        mt.available_balance \n" +
-            "from     mbu_trans mt \n" +
-            "where    mt.pk_id = ?\n" +
-            "\n";
+    private static CallableStatement mapAssignApprovalCode(Connection connection, long mbuTransId) throws SQLException {
+        CallableStatement statement = connection.prepareCall(ASSIGN_APPROVAL_CODE);
+
+        statement.registerOutParameter(1, Types.VARCHAR);
+        statement.setLong(2, mbuTransId);
+
+        return statement;
+    }
+
+    private static final String GET_APPROVAL_CODE = "{? = call mbuintf.get_approval_code(p_id_trs => ?)}";
+
+    private static CallableStatement mapGetApprovalCode(Connection connection, long mbuTransId) throws SQLException {
+        CallableStatement statement = connection.prepareCall(GET_APPROVAL_CODE);
+
+        statement.registerOutParameter(1, Types.VARCHAR);
+        statement.setLong(2, mbuTransId);
+
+        return statement;
+    }
+
+
+
 
 }

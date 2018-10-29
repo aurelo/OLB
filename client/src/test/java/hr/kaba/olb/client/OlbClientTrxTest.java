@@ -40,7 +40,7 @@ class OlbClientTrxTest {
 
         okResponderMock = mock(TrxResponder.class);
 
-        HisoResponse okResponse = new HisoResponse(ResponseCode.TRX_APPROVED, Integer.valueOf(1000), Integer.valueOf(2000));
+        HisoResponse okResponse = new HisoResponse(ResponseCode.TRX_APPROVED, Integer.valueOf(1000), Integer.valueOf(2000), null);
         when(okResponderMock.respond(any(HISOMessage.class))).thenReturn(okResponse);
 
         embeddedChannel = new EmbeddedChannel(

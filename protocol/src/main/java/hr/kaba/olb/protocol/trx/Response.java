@@ -39,6 +39,10 @@ public class Response implements ResponseRenderer {
         responseFields.put(PrimaryBitmapField.P7, transmissionDateTime);
         responseFields.put(PrimaryBitmapField.P39, response.getResponseCode().getCode());
 
+        if (response.getApprovedCode().isPresent()) {
+            responseFields.put(PrimaryBitmapField.P38, response.getApprovedCode().get());
+        }
+
         if (isATM(request)) {
             Atm44 atm44 = Atm44.of(response.getLedgerBalance(), response.getAvailableBalance());
 
