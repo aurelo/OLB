@@ -78,5 +78,19 @@ class HisoToGelfTest {
 
     }
 
+    @Test
+    void canMapNmmMessage() {
+        String nmmRequestString = "DISO0060000400800822000000000000004000000000000001102115000006852301";
+        HISOMessage nmmRequest = OLBCodec.decode(nmmRequestString);
+
+        Map<String, String> actualData = HisoToGelf.adapt(nmmRequest);
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put("protocol", "NMM");
+
+        assertThat(actualData, is(expected));
+
+    }
+
 
 }
