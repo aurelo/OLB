@@ -4,6 +4,13 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * NMM (Network Management Messages) message codes
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public enum NetworkManagementInformationCode {
      LOGON("001")
     ,LOGOFF("002")

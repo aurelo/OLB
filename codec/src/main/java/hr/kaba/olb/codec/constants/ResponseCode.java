@@ -3,6 +3,13 @@ package hr.kaba.olb.codec.constants;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Valid response codes for each message request
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public enum ResponseCode {
      NMM_APPROVED("00", MessageType.NMM_RESPONSES)
     ,NMM_REJECTED("05", MessageType.NMM_RESPONSES)

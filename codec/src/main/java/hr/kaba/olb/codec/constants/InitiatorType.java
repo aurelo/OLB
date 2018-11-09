@@ -4,6 +4,14 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Originator / Responder codes (transaction initiators and responders)
+ * used in base 24 header as last two fields
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public enum InitiatorType {
      UNKNOWN("0")
     ,BASE24_TERMINAL("1")

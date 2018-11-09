@@ -15,8 +15,18 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+/**
+ * CODEC for OLB messages
+ *
+ * encodes string to HISO message
+ * decodes HISO message from string
+ * converts HISO message to a format ready to be sent over network
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class OLBCodec {
 
     private final static Logger logger = LoggerFactory.getLogger(OLBCodec.class);
@@ -28,8 +38,8 @@ public class OLBCodec {
 
     /**
      *
-     * @param encodedMessage
-     * @return OLB message (POJO) parsed from encoded message
+     * @param encodedMessage string representation of message
+     * @return HISO message parsed from encoded message
      */
     public static HISOMessage decode(String encodedMessage) throws MalformedHisoMessageException {
 
@@ -46,18 +56,19 @@ public class OLBCodec {
 
         Base24Header base24Header = Base24Header.parse(parser.base24Header());
         MessageType messageType = MessageType.from(parser.messageType());
-        Bitmap<PrimaryBitmapField> primaryBitmap = new Bitmap<>(parser.primaryBitmap(), PrimaryBitmapField.class, base24Header.getProductIndicator());
+        Bitmap<PrimaryBitmapField> primaryBitmap = new Bitmap<>(parser.primaryBitmap(),
+                                                                PrimaryBitmapField.class,
+                                                                base24Header.getProductIndicator());
 
-        String messageBody = parser.messageBody();
+        Pair<Map<BitmapField, String>, String> parsePrimaryBitmapResult = primaryBitmap.mapFieldValues(parser.messageBody());
 
-        Pair<Map<BitmapField, String>, String> parsePrimaryBitmapResult = primaryBitmap.mapFieldValues(messageBody);
-
-        Map<BitmapField, String> filledValues = new HashMap<>();
-        filledValues.putAll(parsePrimaryBitmapResult.getFirst());
+        Map<BitmapField, String> filledValues = new HashMap<>(parsePrimaryBitmapResult.getFirst());
 
         // is there a secondary bitmap signifying fields from 65 onwards
         if (primaryBitmap.contains(PrimaryBitmapField.P1)) {
-            Bitmap<SecondaryBitmapField> secondaryBitmap = new Bitmap<>(filledValues.get(PrimaryBitmapField.P1), SecondaryBitmapField.class, base24Header.getProductIndicator());
+            Bitmap<SecondaryBitmapField> secondaryBitmap = new Bitmap<>(filledValues.get(PrimaryBitmapField.P1),
+                                                                        SecondaryBitmapField.class,
+                                                                        base24Header.getProductIndicator());
 
             Pair<Map<BitmapField, String>, String> parseSecondaryBitmapResult = secondaryBitmap.mapFieldValues(parsePrimaryBitmapResult.getSecond());
             filledValues.putAll(parseSecondaryBitmapResult.getFirst());
@@ -76,13 +87,16 @@ public class OLBCodec {
     /**
      *
      * @param originalMessage - message being respond to
-     * @param responder
+     * @param responder who is the initiator of response
      * @param responseFields - response fields
      * @return OLB message encoded to string
      */
     public static HISOMessage respondTo(HISOMessage originalMessage, InitiatorType responder, Map<BitmapField, String> responseFields) {
 
-        logger.debug("coding response for: {} for responder: {} with values: {}", originalMessage.getMessageType(), responder.getCode(), responseFields);
+        logger.debug("coding response for: {} for responder: {} with values: {}",
+                     originalMessage.getMessageType(),
+                     responder.getCode(),
+                     responseFields);
 
         Base24Header responseHeader = respondAs(originalMessage.getHeader(), responder);
 
@@ -92,10 +106,15 @@ public class OLBCodec {
 
         responseFieldsValues.putAll(responseFields);
 
-        logger.debug("Product: {} response type: {} with aggregated response fields with original fields: {}", originalMessage.getProductType(), responseMessageType, responseFieldsValues);
+        logger.debug("Product: {} response type: {} with aggregated response fields with original fields: {}",
+                     originalMessage.getProductType(),
+                     responseMessageType,
+                     responseFieldsValues);
 
         // leave only fields required for appropriate message type / product
-        responseFieldsValues = FormatRules.filterFields(originalMessage.getProductType(), responseMessageType, responseFieldsValues);
+        responseFieldsValues = FormatRules.filterFields(originalMessage.getProductType(),
+                                                        responseMessageType,
+                                                        responseFieldsValues);
 
         String secondaryBitmap = calculateSecondaryBitmap(responseFieldsValues);
 
@@ -113,32 +132,44 @@ public class OLBCodec {
 
 
     /**
+     * Encodes HISO message to string representation
      *
-     * @param message
-     * @return OLB message encoded to string
+     * @param message HISO message to be encoded
+     * @return message encoded as string
      */
 
     public static String encode(HISOMessage message) {
-        return String.format("%s%s%s%s%s", ISO, message.getHeader(), message.getMessageType().getCode(), message.getPrimaryBitmap(), message.dataEncoded());
+        return String.format("%s%s%s%s%s",
+                             ISO,
+                             message.getHeader(),
+                             message.getMessageType().getCode(),
+                             message.getPrimaryBitmap(),
+                             message.dataEncoded());
     }
 
 
     /**
+     * wraps HISO logical message with end of message terminator and header containing message length
      *
-     * @param encodedMessage
-     * @return
+     * @param encodedMessage string representation of HISO message
+     * @return message wrapped with header and end of message delimiter
      */
-    public static String wrap(String encodedMessage) {
-        String messagePlusTerminator = String.format("%s%s", encodedMessage, Protocol.MESSAGE_TERMINATOR);
-//        return String.format("%s%s%s", HisoHeader.headerFrom(encodedMessage), encodedMessage, Protocol.MESSAGE_TERMINATOR);
-        return String.format("%s%s", HisoHeader.headerFrom(messagePlusTerminator), messagePlusTerminator);
+    private static String wrap(String encodedMessage) {
+        String messagePlusTerminator = String.format("%s%s",
+                                                     encodedMessage,
+                                                     Protocol.MESSAGE_TERMINATOR);
+
+        return String.format("%s%s",
+                             HisoHeader.headerFrom(messagePlusTerminator),
+                             messagePlusTerminator);
     }
 
 
     /**
+     * encodes HISO message to be sent over network
      *
-     * @param message
-     * @return
+     * @param message HISO message to be prepared for sending
+     * @return HISO message as string being ready to be sent over network
      */
     public static String encodeAndWrap(HISOMessage message) {
         return wrap(encode(message));
@@ -157,7 +188,7 @@ public class OLBCodec {
         private final int indexOfFirstLetterAfterISO;
         private final int messageLength;
 
-        public EncodedMessageParser(String message) {
+        EncodedMessageParser(String message) {
             this.message = message;
             this.messageLength = HisoHeader.messageLength(message);
             indexOfFirstLetterAfterISO = message.indexOf(ISO) + 3;
@@ -180,7 +211,7 @@ public class OLBCodec {
             return message.substring(message.indexOf(ISO) + 3 + BASE24_HEADER_LENGTH + MESSAGE_TYPE_LENGTH + PRIMARY_BITMAP_LENGTH);
         }
 
-        public int getMessageLength() {
+        int getMessageLength() {
             return messageLength;
         }
     }

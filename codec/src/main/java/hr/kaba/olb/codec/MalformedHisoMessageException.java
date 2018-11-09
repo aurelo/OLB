@@ -1,8 +1,15 @@
 package hr.kaba.olb.codec;
 
-public class MalformedHisoMessageException extends IllegalArgumentException {
+/**
+ * Exception thrown when received message does not conform to specs
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
+class MalformedHisoMessageException extends IllegalArgumentException {
 
-    public MalformedHisoMessageException(String message) {
+    MalformedHisoMessageException(String message) {
         super(message);
     }
 }

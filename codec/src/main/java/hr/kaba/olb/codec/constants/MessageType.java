@@ -4,6 +4,14 @@ package hr.kaba.olb.codec.constants;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Message types - 4 characters (digits) representing message purpose
+ * HISO specification demands usage of response message types when responding to request message types
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public enum MessageType {
 
     NMM_REQ("0800", ProductIndicator.NMM_PRODUCT),

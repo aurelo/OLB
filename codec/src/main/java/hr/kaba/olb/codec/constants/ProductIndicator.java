@@ -5,6 +5,13 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * first 2 letters in base 24 header representing message module
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public enum ProductIndicator {
      NMM("00", "Upravljačka poruka")
     ,ATM("01", "ATM transakcijska poruka")
