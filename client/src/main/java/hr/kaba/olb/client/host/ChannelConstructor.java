@@ -2,10 +2,7 @@ package hr.kaba.olb.client.host;
 
 import hr.kaba.olb.client.host.connection.Connector;
 import hr.kaba.olb.client.host.connection.ReconnectStrategy;
-import hr.kaba.olb.client.host.handlers.DisconnectHandler;
-import hr.kaba.olb.client.host.handlers.ErrorLogger;
-import hr.kaba.olb.client.host.handlers.HisoMessageDecoder;
-import hr.kaba.olb.client.host.handlers.HisoProtocolHandler;
+import hr.kaba.olb.client.host.handlers.*;
 import hr.kaba.olb.codec.Protocol;
 import hr.kaba.olb.codec.constants.InitiatorType;
 import hr.kaba.olb.protocol.NmmResponder;
@@ -54,7 +51,8 @@ public class ChannelConstructor {
             protected void initChannel(SocketChannel socketChannel) throws Exception {
 
                 socketChannel.pipeline()
-                             .addLast(new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Unpooled.copiedBuffer(Protocol.ETX)))
+//                             .addLast(new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Unpooled.copiedBuffer(Protocol.ETX)))
+                             .addLast(new MinLengthDelimiterDecoder(5, Protocol.ETX_DELIMITER, true))
                              .addLast(new StringDecoder(Protocol.HISO_CHARSET))
                              .addLast(new HisoMessageDecoder())
                              .addLast(workerLoop, new HisoProtocolHandler(InitiatorType.HOST, nmmResponder, trxResponder))
