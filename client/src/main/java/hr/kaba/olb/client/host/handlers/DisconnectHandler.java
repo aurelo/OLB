@@ -8,6 +8,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Handler that will try to reconnect in case of disconnect
+ * Tries to reconnect only in case client service is designated to run
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class DisconnectHandler extends ChannelInboundHandlerAdapter {
 
     private final static Logger logger = LoggerFactory.getLogger(DisconnectHandler.class);

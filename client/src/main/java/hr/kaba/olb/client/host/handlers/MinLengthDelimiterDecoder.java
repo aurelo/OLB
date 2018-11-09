@@ -10,6 +10,15 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Constructs logical messages from incoming network bytes
+ * Uses delimiter to signal message end, but ignores it when it appears in first XX characters
+ * (as defined by minimum length)
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class MinLengthDelimiterDecoder extends ByteToMessageDecoder {
 
     private static final Logger logger = LoggerFactory.getLogger(MinLengthDelimiterDecoder.class);

@@ -8,12 +8,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Handler that decodes String message to instances of domain messages
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class HisoMessageDecoder extends MessageToMessageDecoder<String> {
 
     private static final Logger logger = LoggerFactory.getLogger(HisoMessageDecoder.class);
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> out) {
 
         logger.debug("decoding: '{}'", message);
 

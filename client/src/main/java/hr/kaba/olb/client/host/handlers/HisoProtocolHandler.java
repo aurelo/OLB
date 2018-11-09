@@ -23,13 +23,20 @@ import org.slf4j.MarkerFactory;
 
 import java.util.Arrays;
 
+/**
+ * Handler that calls domain service responsible for responding to request
+ * and implements protocol required network management status messages
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(HisoProtocolHandler.class);
 
     private final static Marker HISO_REQ_RESP_MARKER = MarkerFactory.getMarker("HISO_REQ_RESP");
 
-    private final InitiatorType respondAs;
 
     private final NmmResponder nmmResponder;
     private final TrxResponder trxResponder;
@@ -38,12 +45,17 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
     private final hr.kaba.olb.protocol.trx.ResponseRenderer trxResponseRenderer;
 
 
+    /**
+     *
+     * @param respondAs who should be initiator of responses
+     * @param nmmResponder service responsible for network management messages requests/responses
+     * @param trxResponder service responsible for transaction responses
+     */
     public HisoProtocolHandler(InitiatorType respondAs, NmmResponder nmmResponder, TrxResponder trxResponder) {
-        this.respondAs = respondAs;
         this.nmmResponder = nmmResponder;
         this.trxResponder = trxResponder;
 
-        nmmResponseRenderer = new Response(this.respondAs);
+        nmmResponseRenderer = new Response(respondAs);
         trxResponseRenderer = new hr.kaba.olb.protocol.trx.Response(respondAs);
     }
 
@@ -100,6 +112,12 @@ public class HisoProtocolHandler extends ChannelInboundHandlerAdapter {
 
     }
 
+    /**
+     * Sends logon request when connection to host was successful as required by protocol
+     *
+     * @param ctx channel handler context
+     * @throws Exception possible during writing
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.debug("Channel active, writing nmm logon request");

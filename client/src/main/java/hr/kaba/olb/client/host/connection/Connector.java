@@ -7,6 +7,13 @@ import io.netty.channel.EventLoop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Logic for connecting and scheduling reconnect tries
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class Connector {
 
     private final static Logger logger = LoggerFactory.getLogger(Connector.class);
@@ -24,11 +31,21 @@ public class Connector {
     };
 
 
+    /**
+     *
+     * @param bootstrap netty bootstrap on basis of which pipeline is constructed
+     * @param reconnectStrategy at what intervals should reconnect be tried
+     */
     public Connector(Bootstrap bootstrap, ReconnectStrategy reconnectStrategy) {
         this.bootstrap = bootstrap;
         this.reconnectStrategy = reconnectStrategy;
     }
 
+    /**
+     * tried to connect to OLB server and adds reconnect service to pipeline
+     *
+     * @return connect channel future listener
+     */
     public ChannelFuture connect() {
         ChannelFuture connectFuture = bootstrap.connect();
         connectFuture.addListener(RECONNECT_LISTENER);
@@ -36,7 +53,11 @@ public class Connector {
     }
 
 
-
+    /**
+     * schedules connect try on given event loop
+     *
+     * @param loop event loop on which reconnection will be tried in case of disconnect
+     */
     public void connectOn(EventLoop loop) {
 
         logger.debug("try to connectOn loop: {}", loop.toString());
@@ -45,7 +66,7 @@ public class Connector {
 
             logger.debug("scheduling connect: {}", loop.toString());
 
-            loop.schedule(this::connect, reconnectStrategy.getReconnectionInverval(), reconnectStrategy.getReconnectionTimeUnit());
+            loop.schedule(this::connect, reconnectStrategy.getReconnectionInterval(), reconnectStrategy.getReconnectionTimeUnit());
         }
     }
 

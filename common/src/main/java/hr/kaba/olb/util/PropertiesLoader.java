@@ -7,22 +7,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Utility class for loading properties from a file
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   15.07.2018
+ */
 public class PropertiesLoader {
-
-//    private final static Logger logger = LoggerFactory.getLogger(PropertiesLoader.class);
-
+    /**
+     *
+     * @param fileName file containing name value pairs
+     * @return Properties
+     * @throws IOException when file resource is not available
+     */
     public static Properties load(String fileName) throws IOException {
-
-//        logger.info("loading properties for {}", fileName);
-
         Properties properties = new Properties();
 
         try (InputStream input = PropertiesLoader.class.getClassLoader().getResourceAsStream(fileName)) {
-
             properties.load(input);
-
         } catch (IOException e) {
-//            logger.warn(e.getLocalizedMessage());
             throw e;
         }
 

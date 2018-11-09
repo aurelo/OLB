@@ -7,6 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+/**
+ * Generic error handler for pipeline
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class ErrorLogger extends ChannelHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorLogger.class);
@@ -16,6 +23,5 @@ public class ErrorLogger extends ChannelHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error(ERROR_MARKER, cause.getMessage());
         cause.printStackTrace();
-//        super.exceptionCaught(ctx, cause);
     }
 }

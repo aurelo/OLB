@@ -17,6 +17,13 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Olb network client
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class OlbClient {
 
     private static final Logger logger = LoggerFactory.getLogger(OlbClient.class);
@@ -32,6 +39,12 @@ public class OlbClient {
     private final AtomicBoolean shouldRun;
 
 
+    /**
+     *
+     * @param trxResponder service capable of responding to OLB transaction request (ATM/POS)
+     * @param shouldRun flag signifying when the Olb client should start/stop
+     * @throws IOException when config file for Olb server parameters is not present
+     */
     public OlbClient(TrxResponder trxResponder, AtomicBoolean shouldRun) throws IOException {
         this.shouldRun = shouldRun;
 
@@ -40,8 +53,9 @@ public class OlbClient {
 
     }
 
+
     /**
-     *
+     * Starts a OLB client by trying to connect to OLB server
      */
     public void start() {
 
@@ -50,8 +64,9 @@ public class OlbClient {
     }
 
     /**
+     * Gracefully stops a OLB client
      *
-     * @throws InterruptedException
+     * @throws InterruptedException when closing netty channel
      */
     public void stop() throws InterruptedException {
 
@@ -85,9 +100,10 @@ public class OlbClient {
      *
      * @param hostProperties properties for clien connection - ip, port...
      * @param trxResponder business implementation responder for transaction message requests
-     * @return
+     * @return service able to construct netty channel from given parameters
      */
     private ChannelConstructor setUpChannel(Properties hostProperties, TrxResponder trxResponder) {
+
         ChannelConstructor.Builder channelBuilder = new ChannelConstructor.Builder();
         channelBuilder.withHost(hostProperties.getProperty("host"))
                       .onPort(Integer.valueOf(hostProperties.getProperty("port")))
