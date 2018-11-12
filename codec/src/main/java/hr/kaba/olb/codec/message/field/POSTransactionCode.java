@@ -3,6 +3,19 @@ package hr.kaba.olb.codec.message.field;
 
 import hr.kaba.olb.codec.constants.ProductIndicator;
 
+
+/**
+ * Transaction codes representing type of transaction request of request
+ * P3 field in the message
+ * Contains 6 characters
+ * 1-2 => ISO transaction code
+ * 3-4 => from account type
+ * 5-6 => to account type
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class POSTransactionCode extends TransactionCode {
 
     private final TransactionCode.ISOTransactionCode isoTransactionCode;

@@ -59,17 +59,6 @@ public class OLBMessage implements HISOMessage {
     @Override
     public String getPrimaryBitmap() {
         return Bitmap.bitmapFromFields(getFields(), PrimaryBitmapField.TYPE);
-        /*
-        String binaryBitmap = Bitmap.binaryBitmapFromFields(
-                getFields()
-                        .entrySet()
-                        .stream()
-                        .filter(e -> e.getKey() instanceof PrimaryBitmapField)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-        );
-
-        return Bitmap.binaryToHex(binaryBitmap);
-        */
     }
 
     @Override

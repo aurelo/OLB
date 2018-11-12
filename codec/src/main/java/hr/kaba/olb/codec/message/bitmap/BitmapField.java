@@ -4,9 +4,17 @@ import hr.kaba.olb.codec.constants.ProductIndicator;
 
 import java.util.Comparator;
 
+/**
+ * Value class representing field in a message
+ * Filed has type, size, position and cardinality (optional/mandatory)
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public interface BitmapField extends Comparator<BitmapField> {
 
-    public enum FieldType {
+    enum FieldType {
          A ("Alphabetic character")
         ,N ("Numeric character")
         ,S ("Special character")
@@ -23,7 +31,7 @@ public interface BitmapField extends Comparator<BitmapField> {
         }
     }
 
-    public enum FieldSize {
+    enum FieldSize {
         FIXED, VARIABILE
     }
 

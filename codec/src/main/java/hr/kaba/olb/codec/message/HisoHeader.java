@@ -7,14 +7,20 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Example of coding:
- * message length = 318
- * to hex: 13E
- * code: 01 3E
- * decimal numbers: 1 62
- * from ascii table: SOH - start of heading (1)  >(62)
+ * Encodes and decodes message length
+ * End of text message delimiter is taken into account in message length
  *
- * message of 318 characters coded as 'SOH>' = '0x01>'
+ * <p>
+ *     Message length is 2 byte encoded (4 hex characters)
+ *     Example:
+ *       message length of 70 characters is 46 hex
+ *       46 hex in ascii table is letter F
+ * </p>
+ *
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
  */
 public class HisoHeader {
 
@@ -28,42 +34,23 @@ public class HisoHeader {
 
     /**
      *
-     * @param message
+     * @param message hiso message with ETX delimiter without encoded length at the beginning
      * @return header containing encoded message length
      */
     public static String headerFrom(String message) {
         Objects.nonNull(message);
 
-//        return Character.toString((char) message.length());
         return hexToAscii(String.format("%04x", message.length() & 0xFFFF));
     }
-    /*
-    OLD IMPLEMENTATION
-    public static String headerFrom(String message) {
-        Objects.nonNull(message);
-
-        int messageLength = message.length();
-
-        byte[] payload = new byte[2];
-        payload[0] = (byte) ((messageLength & 0xFF00) >> 8);
-        payload[1] = (byte) (messageLength & 0x00FF);
-
-        return String.format("%s%s", Character.toString((char) payload[0]), Character.toString((char) payload[1]));
-    }
-    */
 
     /**
      *
-     * @param message
+     * @param message full HISO message
      * @return message length encoded in message header, if exists, otherwise message length
      */
     public static int messageLength(String message) {
 
         String messageLengthEncoded = encodedLength(message);
-
-//        String hexLengthRepresentation = messageLengthEncoded.chars()
-//                                                             .mapToObj(Integer::toHexString)
-//                                                             .collect(Collectors.joining());
 
         String hexLengthRepresentation = asciiToHex(messageLengthEncoded);
 
@@ -91,7 +78,6 @@ public class HisoHeader {
         char[] chars = asciiStr.toCharArray();
         StringBuilder hex = new StringBuilder();
         for (char ch : chars) {
-//            hex.append(Integer.toHexString((int) ch));
             hex.append(String.format("%02x", (int) ch));
         }
 

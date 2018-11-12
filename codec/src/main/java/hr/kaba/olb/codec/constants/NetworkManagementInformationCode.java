@@ -21,7 +21,8 @@ public enum NetworkManagementInformationCode {
      private static Map<String, NetworkManagementInformationCode> codes;
 
      static {
-         codes = Arrays.stream(NetworkManagementInformationCode.values()).collect(Collectors.toMap(NetworkManagementInformationCode::getCode, e -> e));
+         codes = Arrays.stream(NetworkManagementInformationCode.values())
+                       .collect(Collectors.toMap(NetworkManagementInformationCode::getCode, e -> e));
      }
 
     NetworkManagementInformationCode(String code) {

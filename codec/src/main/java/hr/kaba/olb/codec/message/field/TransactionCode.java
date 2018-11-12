@@ -6,6 +6,31 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Transaction codes representing type of transaction request of request
+ * P3 field in the message
+ *
+ * <p>
+ *     Contains 6 characters
+ *     1-2 => ISO transaction code
+ *     3-4 => from account type
+ * </p>
+ *
+ * <p>
+ *     ATM messages
+ *     5 => to account type
+ *     6 => transaction settlement indicator
+ * </p>
+ *
+ * <p>
+ *     POS messages
+ *     5-6 => to account type
+ * </p>
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public abstract class TransactionCode {
 
     public enum ISOTransactionCode {

@@ -8,8 +8,14 @@ import hr.kaba.olb.codec.constants.ProductIndicator;
 import java.util.Map;
 import java.util.Optional;
 
-public interface
-HISOMessage {
+/**
+ * Interface representing key elements of On Line to Bank HISO message protocol
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
+public interface HISOMessage {
 
     Base24Header getHeader();
     ProductIndicator getProductType();

@@ -12,6 +12,13 @@ import java.util.stream.Collectors;
 import static hr.kaba.olb.codec.constants.MessageType.*;
 import static hr.kaba.olb.codec.constants.ProductIndicator.*;
 
+/**
+ * List of format rules for all allowable messages
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class FormatRules {
     private static final List<FormatRule> rules = new ArrayList<>();
 
@@ -420,7 +427,7 @@ public class FormatRules {
 
     }
 
-    public static MessageType behavesAs(MessageType messageType) {
+    private static MessageType behavesAs(MessageType messageType) {
         return behaveAs.keySet().contains(messageType) ? behaveAs.get(messageType) : messageType;
     }
 
@@ -433,6 +440,15 @@ public class FormatRules {
 
     }
 
+    /**
+     * For given product indicator and message types, filters given fields so that they contain only fields appropriate
+     * by specification
+     *
+     * @param productIndicator for what module is message related to (NMM/ATM/POS...)
+     * @param messageType message type
+     * @param fields map of fields values
+     * @return filtered map of field values with only fields related to given product indicator and message type
+     */
     public static Map<BitmapField, String> filterFields(ProductIndicator productIndicator, MessageType messageType, Map<BitmapField, String> fields) {
         return fields.entrySet().stream()
                                 .filter(e -> containsField(productIndicator, messageType, e.getKey()))

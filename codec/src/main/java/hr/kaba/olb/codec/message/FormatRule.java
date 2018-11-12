@@ -6,6 +6,14 @@ import hr.kaba.olb.codec.message.bitmap.BitmapField;
 
 import java.util.Objects;
 
+/**
+ * Value class representing field is contained for appropriate
+ * certain product indicator (ATM/POS) for certain message type
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 class FormatRule {
 
     public enum FieldStatus {
@@ -18,18 +26,18 @@ class FormatRule {
     private final FieldStatus fieldStatus;
 
 
-    public FormatRule(ProductIndicator productIndicator, MessageType messageType, BitmapField field, FieldStatus fieldStatus) {
+    FormatRule(ProductIndicator productIndicator, MessageType messageType, BitmapField field, FieldStatus fieldStatus) {
         this.productIndicator = productIndicator;
         this.messageType = messageType;
         this.field = field;
         this.fieldStatus = fieldStatus;
     }
 
-    public FormatRule(ProductIndicator productIndicator, MessageType messageType, BitmapField field) {
+    FormatRule(ProductIndicator productIndicator, MessageType messageType, BitmapField field) {
         this(productIndicator, messageType, field, FieldStatus.MANDATORY);
     }
 
-    public FieldStatus getFieldStatus() {
+    FieldStatus getFieldStatus() {
         return fieldStatus;
     }
 

@@ -6,6 +6,13 @@ import java.util.*;
 import java.util.function.Predicate;
 
 
+/**
+ * First 64 fields in a HISO message
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public enum PrimaryBitmapField implements BitmapField{
     P1(1, FieldType.AN, FieldSize.FIXED, 16, ProductIndicator.ALL_PRODUCTS, "Sekundarna bitmapa"),
     P2(2, FieldType.AN, FieldSize.VARIABILE, 19, ProductIndicator.TRANSACTION_PRODUCTS, "PAN"),

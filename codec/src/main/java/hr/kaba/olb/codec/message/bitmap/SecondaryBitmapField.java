@@ -5,6 +5,14 @@ import hr.kaba.olb.codec.constants.ProductIndicator;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * Second 64 fields (65 - 128) in a HISO message
+ * Only a few are used in HISO protocol
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public enum SecondaryBitmapField implements BitmapField{
     P65(1, 0, ProductIndicator.UNKNOWN_PRODUCT, "TODO"),
     P66(2, 0, ProductIndicator.UNKNOWN_PRODUCT, "TODO"),

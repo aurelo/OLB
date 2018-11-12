@@ -13,6 +13,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * 64 bit representation of fields being present in message
+ * HISO message can have 2*64 fields (primary and secondary fields)
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class Bitmap<E extends Enum<E> & BitmapField> {
 
     private static final Logger logger = LoggerFactory.getLogger(Bitmap.class);
@@ -94,7 +102,7 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
     }
 
     /**
-     * @param hexMessage
+     * @param hexMessage message to be parsed
      * @return Pair => key = map of filed with parsed value
      * => value = un parsed remainder of original string
      */
@@ -110,8 +118,6 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
 
         for (BitmapField f : getPresentFields()) {
 
-            //logger.debug("current starting index: {}", startingIndex);
-
             if (hexMessage.length() > startingIndex) {
 
                 if (f.getFieldSize() == BitmapField.FieldSize.VARIABILE) {
@@ -125,8 +131,6 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
                 } else {
                     length = f.getMaxLength();
                 }
-
-//            logger.debug("field: {} starting index: {}, length: {}", f, startingIndex, length);
 
                 pairedFields.put(f, hexMessage.substring(startingIndex, startingIndex + length).trim());
                 startingIndex = startingIndex + length;
@@ -153,8 +157,8 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
 
     /**
      *
-     * @param fields
-     * @return
+     * @param fields map of bitmap fields and it's values
+     * @return binary encoding of presence of fields in map
      */
     private static String binaryBitmapFromFields(Map<BitmapField, String> fields) {
 
@@ -171,8 +175,8 @@ public class Bitmap<E extends Enum<E> & BitmapField> {
 
     /**
      *
-     * @param fields
-     * @return
+     * @param fields map of bitmap fields and corresponding values
+     * @return hex encoding of presence of fields in message
      */
     private static String hexBitmapFromFields(Map<BitmapField, String> fields) {
         return binaryToHex(binaryBitmapFromFields(fields));

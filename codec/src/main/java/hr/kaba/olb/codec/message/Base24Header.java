@@ -3,6 +3,21 @@ package hr.kaba.olb.codec.message;
 import hr.kaba.olb.codec.constants.InitiatorType;
 import hr.kaba.olb.codec.constants.ProductIndicator;
 
+/**
+ * Base 24 header -> first field in message after constant "ISO"
+ *
+ * 9 character field
+ *
+ * 1-2 => product indicator - determines message module - (NMM/ATM/POS/FHM)
+ * 3-4 => actual release number - current version is 60
+ * 5-7 => status - important in reject message (9xxx)
+ * 8   => originator code - initiator type enum
+ * 9   => responder code - initiator type enum
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   09.11.2018
+ */
 public class Base24Header {
     private final ProductIndicator productIndicator;
     private final String releaseNumber;
@@ -18,7 +33,7 @@ public class Base24Header {
         this.responderCode = responderCode;
     }
 
-    public static boolean isValidHeader(String from) {
+    private static boolean isValidHeader(String from) {
         return ((from != null) && (from.length() == 9));
     }
 
@@ -44,7 +59,7 @@ public class Base24Header {
         return productIndicator;
     }
 
-    public String getReleaseNumber() {
+    String getReleaseNumber() {
         return releaseNumber;
     }
 
@@ -82,15 +97,15 @@ public class Base24Header {
         private InitiatorType originatorCode;
         private InitiatorType responderCode;
 
-        public Builder() {
+        Builder() {
         }
 
-        public Builder setProductIndicator(String productIndicator) {
+        Builder setProductIndicator(String productIndicator) {
             this.productIndicator = ProductIndicator.find(productIndicator);
             return this;
         }
 
-        public Builder setReleaseNumber(String releaseNumber) {
+        Builder setReleaseNumber(String releaseNumber) {
             this.releaseNumber = releaseNumber;
             return this;
         }
@@ -100,12 +115,12 @@ public class Base24Header {
             return this;
         }
 
-        public Builder setOriginatorCode(String originatorCode) {
+        Builder setOriginatorCode(String originatorCode) {
             this.originatorCode = InitiatorType.find(originatorCode);
             return this;
         }
 
-        public Builder setResponderCode(String responderCode) {
+        Builder setResponderCode(String responderCode) {
             this.responderCode = InitiatorType.find(responderCode);
             return this;
         }
@@ -115,7 +130,7 @@ public class Base24Header {
             return this;
         }
 
-        public Base24Header build() {
+        Base24Header build() {
             return new Base24Header(productIndicator, releaseNumber, status, originatorCode, responderCode);
         }
 
@@ -124,6 +139,11 @@ public class Base24Header {
 
     @Override
     public String toString() {
-        return String.format("%s%s%s%s%s", getProductIndicator().getCode(), getReleaseNumber(), getStatus(), getOriginatorCode().getCode(), getResponderCode().getCode());
+        return String.format("%s%s%s%s%s",
+                             getProductIndicator().getCode(),
+                             getReleaseNumber(),
+                             getStatus(),
+                             getOriginatorCode().getCode(),
+                             getResponderCode().getCode());
     }
 }
