@@ -12,6 +12,14 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Response renderer for nmm requests
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class Response implements ResponseRenderer {
 
     private final static Logger logger = LoggerFactory.getLogger(Response.class);

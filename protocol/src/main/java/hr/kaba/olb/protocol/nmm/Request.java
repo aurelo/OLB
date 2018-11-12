@@ -12,6 +12,13 @@ import hr.kaba.olb.codec.message.bitmap.SecondaryBitmapField;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * NMM request/response utility class
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class Request {
 
     private final NetworkManagementInformationCode requestType;

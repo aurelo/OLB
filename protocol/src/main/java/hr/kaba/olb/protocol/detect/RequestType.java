@@ -1,5 +1,14 @@
 package hr.kaba.olb.protocol.detect;
 
+
+/**
+ * All types of possible request types
+ * Determined on basis of message type and message code combination
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public enum RequestType {
     UNKNOWN
 

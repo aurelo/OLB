@@ -4,6 +4,13 @@ import hr.kaba.olb.codec.constants.ResponseCode;
 
 import java.util.Optional;
 
+/**
+ * Value class for fields expected for transaction responses
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class HisoResponse {
 
     private final ResponseCode responseCode;

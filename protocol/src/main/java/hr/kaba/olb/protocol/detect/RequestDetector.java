@@ -6,6 +6,13 @@ import hr.kaba.olb.codec.message.field.TransactionCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Service capable of determining request type from message
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class RequestDetector {
     private final static Logger logger = LoggerFactory.getLogger(RequestDetector.class);
 

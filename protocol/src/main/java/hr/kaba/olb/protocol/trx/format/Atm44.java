@@ -2,6 +2,14 @@ package hr.kaba.olb.protocol.trx.format;
 
 import java.util.Optional;
 
+
+/**
+ * Value class representing additional response data field (field 44)
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class Atm44 {
 
     private final Optional<Integer> ledgerBalance;

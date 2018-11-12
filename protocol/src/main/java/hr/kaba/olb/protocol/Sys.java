@@ -10,6 +10,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
+/**
+ * protocol global config
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public final class Sys {
 
     private final static AtomicInteger traceNumber = new AtomicInteger(0);
