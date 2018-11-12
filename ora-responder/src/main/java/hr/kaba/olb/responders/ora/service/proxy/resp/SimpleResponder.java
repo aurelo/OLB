@@ -8,11 +8,18 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Objects;
 
+/**
+ * Service that responds to request with only response code
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class SimpleResponder extends ConnectionResponder {
 
     private final String sql;
 
-    public SimpleResponder(String sql) {
+    SimpleResponder(String sql) {
         this.sql = sql;
     }
 

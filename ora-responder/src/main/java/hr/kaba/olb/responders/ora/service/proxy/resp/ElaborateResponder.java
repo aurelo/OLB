@@ -8,6 +8,13 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Objects;
 
+/**
+ * Service that responds to request with response code and account balances
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class ElaborateResponder extends ConnectionResponder {
 
     private final String sql;

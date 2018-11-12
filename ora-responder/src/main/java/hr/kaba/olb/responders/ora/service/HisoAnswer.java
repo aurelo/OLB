@@ -1,5 +1,12 @@
 package hr.kaba.olb.responders.ora.service;
 
+/**
+ * Value class for request that need to return response code together with account balances
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class HisoAnswer {
     private final String responseCode;
     private final Integer ledgerBalance;

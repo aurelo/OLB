@@ -7,6 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
+/**
+ * Logs rejected message - message that informs sender that it's response was invalid
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class RejectLogger {
 
     private static final Logger logger = LoggerFactory.getLogger(RejectLogger.class);

@@ -10,6 +10,13 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Service that determines request type on basis of request message and forwards it to appropriate handler
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class DbResponder {
 
     private static final Logger logger = LoggerFactory.getLogger(DbResponder.class);

@@ -7,6 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
+/**
+ * Service around mbu_trans table
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class MbuTrans {
 
     private static final Logger logger = LoggerFactory.getLogger(MbuTrans.class);
@@ -17,7 +24,7 @@ public class MbuTrans {
         private final Integer isDuplicate;
         private final String status;
 
-        public MbuTransAnswer(Long id, Integer isDuplicate, String status) {
+        MbuTransAnswer(Long id, Integer isDuplicate, String status) {
             this.id = id;
             this.isDuplicate = isDuplicate;
             this.status = status;
@@ -38,11 +45,11 @@ public class MbuTrans {
 
     /**
      *
-     * @param connection
-     * @param request
-     * @param hisoDecodRequestId
-     * @return
-     * @throws SQLException
+     * @param connection oracle connection being used
+     * @param request request message
+     * @param hisoDecodRequestId id of previously database inserted request id
+     * @return value class created for legacy plsql procedure response
+     * @throws SQLException in case of incorrect or invalid procedure call, or connection issues
      */
     public static MbuTransAnswer logRequest(Connection connection, HISOMessage request, Long hisoDecodRequestId) throws SQLException {
 
@@ -67,10 +74,10 @@ public class MbuTrans {
 
     /**
      *
-     * @param connection
-     * @param mbuTransId
-     * @return
-     * @throws SQLException
+     * @param connection oracle connection being used
+     * @param mbuTransId id of previous response
+     * @return value class created for legacy plsql procedure response
+     * @throws SQLException for connection issues or invalid call
      */
     public static HisoAnswer previousResponse(Connection connection, Long mbuTransId) throws SQLException {
         logger.debug("transaction is duplicate - returning previous forwardRequest for trans id: {}", mbuTransId);
@@ -92,6 +99,13 @@ public class MbuTrans {
     }
 
 
+    /**
+     *
+     * @param connection oracle connection being used
+     * @param mbuTransId id of current db response
+     * @return newly assigned approval code
+     * @throws SQLException for connection issues or invalid call
+     */
     public static String assignApprovalCode(Connection connection, Long mbuTransId) throws SQLException {
 
         logger.debug("assigning approval code for transaction {}", mbuTransId);
@@ -104,6 +118,13 @@ public class MbuTrans {
     }
 
 
+    /**
+     *
+     * @param connection oracle connection being used
+     * @param mbuTransId id of current db response
+     * @return approval code for already answered request
+     * @throws SQLException for connection issues or invalid call
+     */
     public static String getApprovalCode(Connection connection, Long mbuTransId) throws SQLException {
         logger.debug("getting approval code for transaction {}", mbuTransId);
 

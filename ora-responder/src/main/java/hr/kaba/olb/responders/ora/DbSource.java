@@ -10,6 +10,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Oracle database implementation of data source
+ * Uses hikari cp database source pool implementation and loads config properties from a resource
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class DbSource implements Source {
 
     private final static Logger logger = LoggerFactory.getLogger(DbSource.class);

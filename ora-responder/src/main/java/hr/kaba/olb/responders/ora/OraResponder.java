@@ -18,6 +18,13 @@ import org.slf4j.MarkerFactory;
 import java.sql.*;
 import java.time.LocalDateTime;
 
+/**
+ * Service that knows how to respond to transaction request using Oracle database
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class OraResponder implements TrxResponder {
     private final static Logger logger = LoggerFactory.getLogger(OraResponder.class);
 
@@ -33,8 +40,8 @@ public class OraResponder implements TrxResponder {
 
     /**
      *
-     * @param request
-     * @return
+     * @param request request message
+     * @return values class containing response fields, most important being response code
      */
 
     @Override

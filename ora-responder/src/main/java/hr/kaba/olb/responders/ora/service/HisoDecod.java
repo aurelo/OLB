@@ -11,6 +11,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 
+/**
+ * Service around mbu_hiso_decod for logging requests and responses to database
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class HisoDecod {
 
     private final static Logger logger = LoggerFactory.getLogger(HisoDecod.class);
@@ -34,11 +41,12 @@ public class HisoDecod {
     }
 
     /**
+     * Logs hiso message request
      *
-     * @param connection
-     * @param request
-     * @return
-     * @throws SQLException
+     * @param connection oracle connection being used
+     * @param request request message being logged
+     * @return value class created for legacy plsql procedure call
+     * @throws SQLException for connection issues or invalid call
      */
     public static LogRequestAnswer logRequest(Connection connection, HISOMessage request) throws SQLException {
 
@@ -59,11 +67,11 @@ public class HisoDecod {
 
     /**
      *
-     * @param connection
-     * @param response
-     * @param mbuTransId
-     * @param mbuHisoRequestId
-     * @throws SQLException
+     * @param connection oracle connection being used
+     * @param response logs response
+     * @param mbuTransId mbu_trans id of transaction
+     * @param mbuHisoRequestId request id of logged request in mbu_hiso_decod table
+     * @throws SQLException for connection issues or invalid call
      */
     public static void logResponse(Connection connection, HISOMessage response, Long mbuTransId, Long mbuHisoRequestId) throws SQLException {
 
@@ -114,13 +122,6 @@ public class HisoDecod {
                     "                                          p_iduplicate => :p_iduplicate)}";
 
 
-    /**
-     *
-     * @param connection
-     * @param request
-     * @return
-     * @throws SQLException
-     */
     private static CallableStatement mapHisoRequest(Connection connection, HISOMessage request) throws SQLException {
 
         CallableStatement callableStatement = connection.prepareCall(PRC_MBU_INSERT_HISO_DECOD);
@@ -209,15 +210,6 @@ public class HisoDecod {
             "  )}";
 
 
-    /**
-     *
-     * @param connection
-     * @param response
-     * @param mbuTransId
-     * @param hisoRequestId
-     * @return
-     * @throws SQLException
-     */
     private static CallableStatement mapHisoResponse(Connection connection, HISOMessage response, long mbuTransId, long hisoRequestId) throws SQLException {
         logger.debug("mapping insert_hiso_resp - P44A: {}", response.getFields().get(PrimaryBitmapField.P44A));
 

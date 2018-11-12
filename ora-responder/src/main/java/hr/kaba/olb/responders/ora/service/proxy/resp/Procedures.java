@@ -7,10 +7,17 @@ import hr.kaba.olb.responders.ora.service.proxy.ConnectionResponder;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mapper class that maps request types to Connection responders (services that can respond to request on connection)
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class Procedures {
 
 
-    public static final ConnectionResponder PRC_MBU_UNKNOWN = new SimpleResponder("{call mbuintf.prc_mbu_unknown(p_id_trs => :p_id_trs, p_rsp_code => :p_rsp_code)}");
+    private static final ConnectionResponder PRC_MBU_UNKNOWN = new SimpleResponder("{call mbuintf.prc_mbu_unknown(p_id_trs => :p_id_trs, p_rsp_code => :p_rsp_code)}");
 
     private static final ConnectionResponder PRC_MBU_ATM_REQ_ISPLATA = new ElaborateResponder(
             "{call mbuintf.prc_mbu_atm_req_isplata(p_id_trs            => :p_id_trs,\n" +
