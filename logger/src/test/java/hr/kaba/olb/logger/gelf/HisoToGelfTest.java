@@ -23,7 +23,7 @@ class HisoToGelfTest {
         expected.put("protocol", "ATM");
         expected.put("type", "0221");
         expected.put("code", "21");
-        expected.put("amount", "000000010000");
+        expected.put("amount", "100.0");//000000010000
         expected.put("transmission_date", "0911131707");
         expected.put("card", "5590722400899963");
         expected.put("rrn", "5964");
@@ -47,7 +47,7 @@ class HisoToGelfTest {
         expected.put("protocol", "POS");
         expected.put("type", "0200");
         expected.put("code", "00");
-        expected.put("amount", "000000033006");
+        expected.put("amount", "330.06");//000000033006
         expected.put("transmission_date", "1004073227");
         expected.put("card", "6020202000821392");
         expected.put("rrn", "205518");
@@ -68,7 +68,7 @@ class HisoToGelfTest {
         expected.put("protocol", "ATM");
         expected.put("type", "0210");
         expected.put("code", "01");
-        expected.put("amount", "000000200000");
+        expected.put("amount", "2000.0");//000000200000
         expected.put("transmission_date", "1004074312");
         expected.put("card", "6020206000779351");
         expected.put("rrn", "3518");

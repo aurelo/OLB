@@ -6,6 +6,14 @@ import org.apache.logging.log4j.CloseableThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementation of HISO to GELF logger, taking a HISO message and Logger doer
+ * and logging a message to GELF
+ *
+ * @author  Zlatko Gudasić
+ * @version 1.0
+ * @since   12.11.2018
+ */
 public class HisoLog4j2GelfLogger implements HisoMessageLogger {
     private static final Logger logger = LoggerFactory.getLogger(HisoLog4j2GelfLogger.class);
 
