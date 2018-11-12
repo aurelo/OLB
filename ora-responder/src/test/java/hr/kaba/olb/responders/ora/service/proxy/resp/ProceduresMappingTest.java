@@ -16,8 +16,7 @@ class ProceduresMappingTest {
 
     @Test
     void shouldHaveMappingForAllExceptUnknownAndReject() {
-        Arrays.asList(RequestType.values())
-              .stream()
+        Arrays.stream(RequestType.values())
               .filter(r -> r != RequestType.UNKNOWN && r != RequestType.REJECT)
               .forEach(requestType -> assertThat(String.format("No prcedure handler for %s", requestType.name())
                                                , Procedures.handlerFor(requestType), is(not(Procedures.PRC_MBU_UNKNOWN))));
