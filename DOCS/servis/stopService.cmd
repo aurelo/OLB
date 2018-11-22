@@ -1,0 +1,1 @@
+"C:\Java\servis\prunsrv" //SS//MbuKabaClient
