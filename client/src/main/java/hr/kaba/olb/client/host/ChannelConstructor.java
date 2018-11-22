@@ -70,8 +70,8 @@ public class ChannelConstructor {
             protected void initChannel(SocketChannel socketChannel) {
 
                 socketChannel.pipeline()
-//                             .addLast(new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Unpooled.copiedBuffer(Protocol.ETX)))
-                             .addLast(new MinLengthDelimiterDecoder(5, Protocol.ETX_DELIMITER, true))
+                             .addLast(new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Unpooled.copiedBuffer(Protocol.ETX)))
+//                             .addLast(new MinLengthDelimiterDecoder(5, Protocol.ETX_DELIMITER, true))
                              .addLast(new StringDecoder(Protocol.HISO_CHARSET))
                              .addLast(new HisoMessageDecoder())
                              .addLast(workerLoop, new HisoProtocolHandler(InitiatorType.HOST, nmmResponder, trxResponder))
